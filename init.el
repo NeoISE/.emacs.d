@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Jan. 2017 -- 23:15 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <14 Jan. 2017 -- 23:27 (Central Standard Time) by >
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -824,7 +824,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (require 'smart-mode-line-powerline-theme)
   (require 'smart-mode-line-light-powerline-theme)
   (require 'highlight-thing)
-  (require 'highlight-indent-guides)
   (require 'rainbow-mode)
   (require 'sr-speedbar)
   (require 'shift-cursor)
