@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Jan. 2017 -- 22:01 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <14 Jan. 2017 -- 23:15 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -245,9 +245,9 @@
 (setq require-final-newline "visit-save")
 
 ;; setup markdown mode
-(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode) t)
-(add-to-list 'auto-mode-alist '("\\.md\\'"       . markdown-mode) t)
-(add-to-list 'auto-mode-alist '("\\.markdown\\'" . markdown-mode) t)
+(push '("\\.markdown\\'" . markdown-mode) auto-mode-alist)
+(push '("\\.md\\'" . markdown-mode) auto-mode-alist)
+(push '("README\\.md\\'" . gfm-mode) auto-mode-alist)
 
 ;; single space ends a sentence
 (setq sentence-end-double-space nil)

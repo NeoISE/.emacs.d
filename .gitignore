@@ -1,0 +1,11 @@
+*
+
+!init.el
+!README.md
+!LICENSE
+!.gitignore
+
+!/elisp/*.el
+!/icons/*
+!/themes/*.el
+!/vendor/*.el
