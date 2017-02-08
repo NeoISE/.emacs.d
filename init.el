@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Jan. 2017 -- 23:27 (Central Standard Time) by >
+;; Last Updated: <08 Feb. 2017 -- 00:56 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -527,8 +527,8 @@ Can be cancelled in an active mode with the universal prefix, C-u."
     (require 'auto-complete-c-headers)
 
     (setq my-c-c++-mode-sources (append '(ac-source-clang-async)
-                                          my-ac-sources-for-c-c++))
-    (add-to-list 'my-ac-sources-for-c-c++ '(ac-source-c-headers) t)
+                                          my-c-c++-mode-sources))
+    (add-to-list 'my-c-c++-mode-sources '(ac-source-c-headers) t)
     
     (defun my-auto-completion-c-mode-hook nil
       "Custom sources for C and C++"
