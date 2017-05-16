@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <08 Feb. 2017 -- 00:56 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <23 Apr. 2017 -- 16:04 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -72,6 +72,9 @@
                                   csharp-mode
                                   markdown-mode
                                   powershell
+                                  js2-mode
+                                  json-mode
+                                  matlab-mode
 
                                   ;; minor modes for improved editing
                                   smart-tabs-mode
@@ -90,6 +93,7 @@
                                       ;; clang is not on windows setup
                                       '(auto-complete-c-headers
                                         auto-complete-clang-async))
+                                  ac-math
 
                                   ;; graphic improvements
                                   zenburn-theme
@@ -173,6 +177,7 @@
 (require 'yasnippet)
 (require 'auto-complete)
 (require 'auto-complete-config)
+(require 'ac-math)
 (require 'ido-grid-mode)
 (require 'smart-mark)
 (require 'stickyfunc-enhance)
@@ -474,11 +479,12 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 ;; §2 §§4: Yasnippet and Auto-Complete
 
 ;; yasnippet mode settings
-(yas-reload-all)
-(add-hook 'prog-mode-hook 'yas-minor-mode)
+;; (yas-reload-all)
+;; (add-hook 'prog-mode-hook 'yas-minor-mode)
+(yas-global-mode t)
 
 ;;; auto-complete settings
-(global-auto-complete-mode t)
+(add-to-list 'ac-modes 'latex-mode)
 (setq ac-auto-start 3
       ac-use-fuzzy t
       ac-show-menu-immediately-on-auto-complete t)
@@ -491,6 +497,7 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 ;;    c/c++ => "clang-async", "semantic", "c-headers", prog-mode
 ;;    css => "css-property", prog-mode
 ;;    emacs-lisp => "symbols", "variables", "functions", "features", prog-mode
+;;   LaTeX-mode => "math-latex", "latex-commands", default
 (defvar my-default-sources '(ac-source-words-in-buffer
                              ac-source-words-in-same-mode-buffers))
 (defvar my-prog-mode-sources (append '(ac-source-yasnippet)
@@ -504,6 +511,10 @@ Can be cancelled in an active mode with the universal prefix, C-u."
                                              ac-source-functions
                                              ac-source-features)
                                            my-prog-mode-sources))
+(defvar my-LaTeX-mode-sources (append '(; ac-source-math-unicode
+                                        ac-source-math-latex
+                                        ac-source-latex-commands)
+                                      my-default-sources))
 
 (setq-default ac-sources my-default-sources)
 
@@ -542,11 +553,16 @@ Can be cancelled in an active mode with the universal prefix, C-u."
     (setq achead:include-directories
           (append achead:include-directories '("/usr/include/c++/6.2.1")))))
 
-
 ;; additional sources for elisp
 (add-hook 'emacs-lisp-mode-hook
           (lambda nil
             (setq ac-sources my-emacs-lisp-mode-sources)))
+
+;; sources for LaTeX
+(add-hook 'latex-mode-hook (lambda nil (setq ac-sources my-LaTeX-mode-sources)))
+
+;; start auto-complete
+(global-auto-complete-mode t)
 
 
 
@@ -729,6 +745,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  (selected-frame))))
     (if (display-graphic-p frm)
         ;; the frame is graphical
+        
         (progn
           (let* ((frame-resize-pixelwise t)
                  (max-height (maximum-pixel-height frm))
@@ -979,16 +996,34 @@ Thus, this advice is created to get the margins spaced correctly."
       (dolist (frm-alist '(initial-frame-alist
                            default-frame-alist))
         (if (eq system-type 'windows-nt)
-            (add-to-list frm-alist '(font . "Consolas-10"))
-          (add-to-list frm-alist '(font . "Hack-10"))))
+            (if (member "Hack" (font-family-list))
+                (add-to-list frm-alist '(font . "Hack-10"))
+              ;; else
+              (add-to-list frm-alist '(font . "Consolas-10"))
+              ;; For math symbols
+              (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono") ; Math symb
+              (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono") ; arrows
+              )
+          (if (member "Hack" (font-family-list))
+              (add-to-list frm-alist '(font . "Hack-10"))
+            (add-to-list frm-alist '(font . "DejaVu Sans Mono-10")))))
       
       (add-hook 'after-make-frame-functions 'my-initial-frame-setup))
   ;; when not started as a daemon
   (progn
     ;; fonts are not shared across systems, so we use different fonts
     (if (eq system-type 'windows-nt)
-        (set-frame-font "Consolas-10" t t)
-      (set-frame-font "Hack-10" t t))
+        (if (member "Hack" (font-family-list))
+            (set-frame-font "Hack-10" t t)
+          ;; else
+          (set-frame-font "Consolas-10" t t)
+          ;; For math symbols
+          (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono") ; Math symb
+          (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono") ; arrows
+          )
+      (if (member "Hack" (font-family-list))
+          (set-frame-font "Hack-10" t t)
+        (set-frame-font "DejaVu Sans Mono-10" t t)))
     
     (my-initial-frame-setup)
     (add-hook 'after-make-frame-functions 'my-default-frame-setup)))
