@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Aug. 2017 -- 21:59 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <21 Aug. 2017 -- 22:32 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -980,12 +980,12 @@ Thus, this advice is created to get the margins spaced correctly."
         sr-speedbar-right-side nil)
   (add-hook 'speedbar-mode-hook (lambda nil
                                   (linum-mode -1)))
-  (sr-speedbar-open)
-  (with-current-buffer sr-speedbar-buffer-name
-    (setq window-size-fixed 'width))
+  ;; (sr-speedbar-open)
+  ;; (with-current-buffer sr-speedbar-buffer-name
+  ;;   (setq window-size-fixed 'width))
 
-  ;; after affecting the speedbar buffer, we move back to the scratch buffer
-  (switch-to-buffer "*scratch*")
+  ;; ;; after affecting the speedbar buffer, we move back to the scratch buffer
+  ;; (switch-to-buffer "*scratch*")
   )
 
 ;; execute the graphical section under different circumstance
