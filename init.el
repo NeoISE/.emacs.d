@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <23 Apr. 2017 -- 16:04 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <21 Aug. 2017 -- 21:59 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -111,7 +111,7 @@
                                   direx
                                   ido-grid-mode
                                   ace-popup-menu
-                                  ido-ubiquitous
+                                  ido-completing-read+
                                   smex
                                   ranger
 
@@ -170,7 +170,7 @@
 (require 'powershell)
 (require 'smart-tabs-mode)
 (require 'smex)
-(require 'ido-ubiquitous)
+(require 'ido-completing-read+)
 (require 'ace-popup-menu)
 (require 'popwin)
 (require 'direx)
