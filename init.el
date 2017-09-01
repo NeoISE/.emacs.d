@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Aug. 2017 -- 22:32 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <31 Aug. 2017 -- 22:01 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -365,7 +365,9 @@
 
 (add-hook 'powershell-mode-hook
           (lambda nil
-            (setq fill-column 115)))
+            (setq fill-column 115)
+            ;; I give up on having tabs in PS
+            (setq indent-tabs-mode nil)))
 
 ;; smart-tabs-mode config
 ;; ;; add c-sharp to smart-tab-mode
@@ -386,7 +388,9 @@
                        js2-mode-hook
                        cperl-mode-hook
                        python-mode-hook
-                       powershell-mode-hook))
+                       ;; I give up on having tabs in PS
+                       ;;powershell-mode-hook
+                       ))
   ;; add the minor mode to the major mode
   (add-hook mode-indent 'smart-tabs-mode))
 
@@ -396,7 +400,8 @@
 (smart-tabs-advice js2-indent-line js2-basic-offset)
 (smart-tabs-advice cperl-indent-line cperl-indent-level)
 (smart-tabs-advice python-indent-line-1 python-indent)
-(smart-tabs-advice powershell-indent-line powershell-indent)
+;; I give up on having tabs in PS
+;;(smart-tabs-advice powershell-indent-line powershell-indent)
 
 ;; soft wrapping
 (dolist (hook '(text-mode-hook
