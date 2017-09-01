@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Aug. 2017 -- 22:01 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <31 Aug. 2017 -- 23:17 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -324,7 +324,11 @@
 
 (setq-default fill-column 80
               tab-width 4
-              tab-stop-list (number-sequence 4 200 4)
+              ;; The following is not necessary. As far as I know, since version
+              ;; 25+, the default nil value will already use `tab-width' as the
+              ;; deciding value.
+              ;;tab-stop-list (number-sequence 4 200 4)
+              tab-stop-list nil         ; to enforce the above statement
               indent-tabs-mode t)
 
 ;; no literal tabs for modes
