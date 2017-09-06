@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Aug. 2017 -- 22:32 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <05 Sep. 2017 -- 18:01 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -94,6 +94,7 @@
                                       '(auto-complete-c-headers
                                         auto-complete-clang-async))
                                   ac-math
+                                  ac-js2
 
                                   ;; graphic improvements
                                   zenburn-theme
@@ -184,6 +185,9 @@
 (require 'origami)
 (require 'browse-kill-ring)
 (require 'markdown-mode)
+(require 'js)                           ; js-mode
+(require 'js2-mode)
+(require 'ac-js2)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
@@ -317,6 +321,12 @@
         nil)
     t))
 (add-hook 'kill-buffer-query-functions 'prevent-scratch-buffer-kill)
+
+;; use js2-mode instead of js-mode for javascript files
+(push '("\\.js\\'" . js2-mode) auto-mode-alist)
+;; but give js-mode a better linting capacity
+(add-hook 'js-mode-hook 'js2-minor-mode)
+(setq js2-highlight-level 3)
 
 
 
@@ -496,6 +506,8 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 ;;   prog-mode => "yasnippet", default
 ;;    c/c++ => "clang-async", "semantic", "c-headers", prog-mode
 ;;    css => "css-property", prog-mode
+;;    js => "semantic", prog-mode
+;;    js2 => "ac-js2", prog-mode
 ;;    emacs-lisp => "symbols", "variables", "functions", "features", prog-mode
 ;;   LaTeX-mode => "math-latex", "latex-commands", default
 (defvar my-default-sources '(ac-source-words-in-buffer
@@ -506,6 +518,8 @@ Can be cancelled in an active mode with the universal prefix, C-u."
                                 ac-source-semantic-raw))
 (defvar my-css-mode-sources (append '(ac-source-css-property)
                                     my-prog-mode-sources))
+(defvar my-js-mode-sources (append '(ac-source-semantic ac-source-semantic-raw)
+                                   my-prog-mode-sources))
 (defvar my-emacs-lisp-mode-sources (append '(ac-source-symbols
                                              ac-source-variables
                                              ac-source-functions
@@ -560,6 +574,13 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 
 ;; sources for LaTeX
 (add-hook 'latex-mode-hook (lambda nil (setq ac-sources my-LaTeX-mode-sources)))
+
+;; sources for (basic) javascript-mode
+(add-hook 'js-mode-hook (lambda nil (setq ac-sources my-js-mode-sources)))
+
+;; add better auto-complete to js2
+;; see a fix of a error: https://is.gd/VoYlyy
+(add-hook 'js2-mode-hook 'ac-js2-mode)
 
 ;; start auto-complete
 (global-auto-complete-mode t)
