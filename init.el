@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <05 Sep. 2017 -- 18:01 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <10 Sep. 2017 -- 16:09 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -340,7 +340,9 @@
 ;; no literal tabs for modes
 (dolist (hook '(emacs-lisp-mode-hook
                 lisp-mode-hook
-                lisp-interaction-mode-hook))
+                lisp-interaction-mode-hook
+
+                html-mode-hook))
   (add-hook hook (lambda nil
                    (setq indent-tabs-mode nil))))
 
