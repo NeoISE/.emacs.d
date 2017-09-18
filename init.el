@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <18 Sep. 2017 -- 18:19 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <18 Sep. 2017 -- 18:24 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -89,6 +89,7 @@
                                   ;; tab-completions
                                   yasnippet
                                   java-snippets
+                                  haskell-snippets
                                   auto-complete
                                   ,@(unless (eq system-type 'windows-nt)
                                       ;; clang is not on windows setup
@@ -185,6 +186,8 @@
 (require 'origami)
 (require 'browse-kill-ring)
 (require 'markdown-mode)
+(require 'haskell-mode)
+(require 'haskell-snippets)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
