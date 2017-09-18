@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Aug. 2017 -- 22:32 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <18 Sep. 2017 -- 18:19 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -75,6 +75,7 @@
                                   js2-mode
                                   json-mode
                                   matlab-mode
+                                  haskell-mode
 
                                   ;; minor modes for improved editing
                                   smart-tabs-mode
