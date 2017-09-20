@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Aug. 2017 -- 22:32 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <20 Sep. 2017 -- 01:39 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -317,6 +317,14 @@
         nil)
     t))
 (add-hook 'kill-buffer-query-functions 'prevent-scratch-buffer-kill)
+
+;; bug fix: issue in EMACS below version 25.3, a fix is available below
+(when (or (< emacs-major-version 25)
+          (and (= emacs-major-version 25)
+               (< emacs-minor-version 3)))
+  (eval-after-load "enriched"
+    '(defun enriched-decode-display-prop (start end &optional param)
+       (list start end))))
 
 
 
