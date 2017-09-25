@@ -6,7 +6,7 @@
 ;; Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <22 Sep. 2017 -- 23:39 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <23 Sep. 2017 -- 18:13 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -32,32 +32,42 @@
 When called repeatedly, append copy subsequent lines.
 When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
 
-Originally from URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html' under Version 2016-06-18"
-(interactive)
-(let (-p1 -p2)
-  (if current-prefix-arg
-      (setq -p1 (point-min) -p2 (point-max))
-    (if (use-region-p)
-        (setq -p1 (region-beginning) -p2 (region-end))
-      (setq -p1 (line-beginning-position) -p2 (line-end-position))))
-  (if (eq last-command this-command)
-      (progn
-        (progn                     ; Exit if there's no more next line
-          (end-of-line)
-          (forward-char)
-          (backward-char))
-        (kill-append "\n" nil)
-        (kill-append
-         (buffer-substring-no-properties
-          (line-beginning-position) (line-end-position)) nil)
-        (message "Line copy appended"))
+Originally from URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html' under Version 2017-07-08"
+  (interactive)
+  (cond
+   (current-prefix-arg
     (progn
-      (kill-ring-save -p1 -p2)
-      (if current-prefix-arg
-          (message "Buffer text copied")
-        (message "Text copied"))))
-  (end-of-line)
-  (forward-char)))
+      (kill-ring-save (point-min) (point-max))
+      (message "All text in visible buffer is copied")))
+   ((use-region-p)
+    (progn
+      (kill-ring-save (region-beginning) (region-end))
+      (message "Text in active region copied")))
+   ((eq last-command this-command)
+    (if (eobp)
+        (message "Empty line at end of buffer.")
+      (progn
+        (kill-append "\n" nil)
+        (kill-append (buffer-substring-no-properties (line-beginning-position)
+                                                     (line-end-position))
+                     nil)
+        (message "Line copy appended")
+        (progn
+          (end-of-line)
+          (forward-char)))))
+   ((eobp)
+    (if (eq (char-before) 10)
+        (message "Empty line at the end of buffer.")
+      (progn
+        (kill-ring-save (line-beginning-position) (line-end-position))
+        (end-of-line)
+        (message "Line Copied"))))
+   (t
+    (progn
+      (kill-ring-save (line-beginning-position) (line-end-position))
+      (end-of-line)
+      (forward-char)
+      (message "Line Copied")))))
 
 (provide 'xah-copy)
 
