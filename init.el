@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Sep. 2017 -- 01:39 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <11 Oct. 2017 -- 01:20 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -332,7 +332,11 @@
 
 (setq-default fill-column 80
               tab-width 4
-              tab-stop-list (number-sequence 4 200 4)
+              ;; The following is not necessary. As far as I know, since version
+              ;; 25+, the default nil value will already use `tab-width' as the
+              ;; deciding value.
+              ;;tab-stop-list (number-sequence 4 200 4)
+              tab-stop-list nil         ; to enforce the above statement
               indent-tabs-mode t)
 
 ;; no literal tabs for modes
@@ -373,7 +377,9 @@
 
 (add-hook 'powershell-mode-hook
           (lambda nil
-            (setq fill-column 115)))
+            (setq fill-column 115)
+            ;; I give up on having tabs in PS
+            (setq indent-tabs-mode nil)))
 
 ;; smart-tabs-mode config
 ;; ;; add c-sharp to smart-tab-mode
@@ -394,7 +400,9 @@
                        js2-mode-hook
                        cperl-mode-hook
                        python-mode-hook
-                       powershell-mode-hook))
+                       ;; I give up on having tabs in PS
+                       ;;powershell-mode-hook
+                       ))
   ;; add the minor mode to the major mode
   (add-hook mode-indent 'smart-tabs-mode))
 
@@ -404,7 +412,8 @@
 (smart-tabs-advice js2-indent-line js2-basic-offset)
 (smart-tabs-advice cperl-indent-line cperl-indent-level)
 (smart-tabs-advice python-indent-line-1 python-indent)
-(smart-tabs-advice powershell-indent-line powershell-indent)
+;; I give up on having tabs in PS
+;;(smart-tabs-advice powershell-indent-line powershell-indent)
 
 ;; soft wrapping
 (dolist (hook '(text-mode-hook
