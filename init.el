@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Oct. 2017 -- 00:01 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <20 Oct. 2017 -- 03:39 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -76,6 +76,7 @@
                                   json-mode
                                   matlab-mode
                                   haskell-mode
+                                  lua-mode
 
                                   ;; minor modes for improved editing
                                   smart-tabs-mode
@@ -397,6 +398,12 @@
             ;; I give up on having tabs in PS
             (setq indent-tabs-mode nil)))
 
+;; lua indentations
+(defvaralias 'lua-indent-level 'tab-width)
+(setq-default lua-indent-string-contents nil)
+(add-hook 'lua-mode-hook (lambda nil
+                           (setq tab-width 2)))
+
 ;; smart-tabs-mode config
 ;; ;; add c-sharp to smart-tab-mode
 ;; (smart-tabs-add-language-support csharp csharp-mode-hook
@@ -416,6 +423,7 @@
                        js2-mode-hook
                        cperl-mode-hook
                        python-mode-hook
+                       lua-mode-hook
                        ;; I give up on having tabs in PS
                        ;;powershell-mode-hook
                        ))
@@ -428,6 +436,7 @@
 (smart-tabs-advice js2-indent-line js2-basic-offset)
 (smart-tabs-advice cperl-indent-line cperl-indent-level)
 (smart-tabs-advice python-indent-line-1 python-indent)
+(smart-tabs-advice lua-indent-line lua-indent-level)
 ;; I give up on having tabs in PS
 ;;(smart-tabs-advice powershell-indent-line powershell-indent)
 
