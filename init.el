@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <19 Oct. 2017 -- 23:22 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <20 Oct. 2017 -- 00:01 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -75,6 +75,7 @@
                                   js2-mode
                                   json-mode
                                   matlab-mode
+                                  haskell-mode
 
                                   ;; minor modes for improved editing
                                   smart-tabs-mode
@@ -88,6 +89,7 @@
                                   ;; tab-completions
                                   yasnippet
                                   java-snippets
+                                  haskell-snippets
                                   auto-complete
                                   ,@(unless (eq system-type 'windows-nt)
                                       ;; clang is not on windows setup
@@ -188,6 +190,8 @@
 (require 'js)                           ; js-mode
 (require 'js2-mode)
 (require 'ac-js2)
+(require 'haskell-mode)
+(require 'haskell-snippets)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
