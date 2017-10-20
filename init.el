@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Oct. 2017 -- 03:02 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <20 Oct. 2017 -- 03:07 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -315,11 +315,6 @@ Otherwise return nil."
 (setq browse-kill-ring-highlight-current-entry t
       browse-kill-ring-show-preview t)
 
-;; tells alignment to use only spaces
-(defadvice align-regexp (around align-regexp-with-spaces activate)
-  (let ((indent-tabs-mode nil))
-    ad-do-it))
-
 ;; putting the function declaration in header-line
 (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
 (semantic-mode t)
@@ -361,14 +356,31 @@ Otherwise return nil."
               tab-stop-list nil         ; to enforce the above statement
               indent-tabs-mode t)
 
+(defun advice--force-use-spaces-only (orig-fun &rest args)
+  "Forces functions that have this advice active to be using only spaces without hard tabs."
+  (let ((indent-tabs-mode nil))
+    (apply orig-fun args)))
+
+;; prevent align* from inserting hard tabs that create alignment issues with
+;; mismatching tab sizes on different systems
+(dolist (command '(align
+                   align-regexp))
+  (advice-add command :around #'advice--force-use-spaces-only))
+
+(defun hook--force-use-spaces-only ()
+  (setq indent-tabs-mode nil))
+
 ;; no literal tabs for modes
 (dolist (hook '(emacs-lisp-mode-hook
                 lisp-mode-hook
                 lisp-interaction-mode-hook
 
-                html-mode-hook))
-  (add-hook hook (lambda nil
-                   (setq indent-tabs-mode nil))))
+                powershell-mode-hook
+
+                nxml-mode-hook
+                html-mode-hook
+                ))
+  (add-hook hook #'hook--force-use-spaces-only))
 
 ;; make offsets in cc-mode the same as tab-width
 (defvaralias 'c-basic-offset 'tab-width)
@@ -401,9 +413,7 @@ Otherwise return nil."
 
 (add-hook 'powershell-mode-hook
           (lambda nil
-            (setq fill-column 115)
-            ;; I give up on having tabs in PS
-            (setq indent-tabs-mode nil)))
+            (setq fill-column 115)))
 
 ;; smart-tabs-mode config
 ;; ;; add c-sharp to smart-tab-mode
