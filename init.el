@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Oct. 2017 -- 00:01 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <20 Oct. 2017 -- 03:02 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -35,9 +35,19 @@
   "The minimum major version of emacs for this configuration.")
 (defconst emacs-minor-version-minimum 1
   "The minimum minor version of emacs for this configuration.")
-(when (or (< emacs-major-version emacs-major-version-minimum)
-          (and (= emacs-major-version emacs-major-version-minimum)
-               (< emacs-minor-version emacs-minor-version-minimum)))
+
+(defun current-version-below-minimum-p (major minor &optional allow-equal)
+  "Returns t if the `MAJOR' version supplied is greater than the current major revision of emacs or if the `MINOR' version is greater than the current minor revision of emacs when the `MAJOR' version match.
+If `ALLOW-EQUAL' is non-nil, then the `MINOR' version will return t also when it matches the current minor revision (in the case of the `MAJOR' versions are equal).
+Otherwise return nil."
+  (or (< emacs-major-version major)
+      (and (= emacs-major-version major)
+           (or (and allow-equal
+                    (<= emacs-minor-version minor))
+               (< emacs-minor-version minor)))))
+
+(when (current-version-below-minimum-p emacs-major-version-minimum
+                                       emacs-minor-version-minimum)
   (error "The minimum emacs version that will work with this config is %d.%d"
          emacs-major-version-minimum emacs-minor-version-minimum))
 
@@ -327,9 +337,7 @@
 (add-hook 'kill-buffer-query-functions 'prevent-scratch-buffer-kill)
 
 ;; bug fix: issue in EMACS below version 25.3, a fix is available below
-(when (or (< emacs-major-version 25)
-          (and (= emacs-major-version 25)
-               (< emacs-minor-version 3)))
+(when (current-version-below-minimum-p 25 3)
   (eval-after-load "enriched"
     '(defun enriched-decode-display-prop (start end &optional param)
        (list start end))))
