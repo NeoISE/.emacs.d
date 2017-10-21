@@ -1,11 +1,21 @@
-*
+# exclude all in the main scope
+# this helps to exclude most of the package resources that are not my configs
+/*
 
-!init.el
-!README.md
-!LICENSE
-!.gitignore
+# exclude EMACS temp files
+\#*\#
+.\#*
 
-!/elisp/*.el
-!/icons/*
-!/themes/*.el
-!/vendor/*.el
+*.bak
+
+# track the git-ignore, the main config file (init.el), license file, and read-me
+!/init.el
+!/README.md
+!/LICENSE
+!/.gitignore
+
+# keep only directories with my config in it
+!/elisp/
+!/icons/
+!/themes/
+!/vendor/
