@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Oct. 2017 -- 00:01 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <04 Nov. 2017 -- 00:40 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -612,12 +612,28 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 
 ;; §2 §§5: Spelling
 
-(setq ispell-program-name "aspell"
-      ispell-extra-args '("--sug-mode=ultra"
-                          "--run-together"
-                          "--run-together-limit=5"
-                          "--run-together-min=2")
-      ispell-list-command "--list")
+;; Since aspell is good with CamelCases, it is tried first before falling back
+;; on hunspell, and if none are available, then disable spell checking.
+(cond
+ ((executable-find "aspell")
+  ;; found aspell on this system
+  (setq ispell-program-name "aspell"
+        ispell-extra-args '("--sug-mode=ultra"
+                            "--run-together"
+                            "--run-together-limit=10"
+                            "--run-together-min=2")
+        ispell-list-command "--list"))
+
+ ((executable-find "hunspell")
+  ;; found hunspell on this system
+  (setq ispell-program-name "hunspell"
+        ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]"
+                                         "[']" nil ("-d" "en_US") nil utf-8))
+        ispell-local-dictionary "en_US"))
+
+ (t
+  (setq ispell-program-name nil)
+  (message "Cannot find any spell checkers on this system...")))
 
 ;; performance speedup
 (setq flyspell-issue-message-flag nil)
