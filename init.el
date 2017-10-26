@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <04 Nov. 2017 -- 00:41 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <04 Nov. 2017 -- 00:43 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -645,11 +645,16 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 
 ;; enable flyspell in text mode
 (add-hook 'text-mode-hook 'flyspell-mode)
+
+(defun disable-flyspell-mode nil
+  (interactive)
+  (flyspell-mode -1))
+
 ;; but take it off of change-log and log-edit
 (dolist (hook '(change-log-mode-hook
                 log-edit-mode-hook))
-  (add-hook hook (lambda nil
-                   (flyspell-mode -1))))
+  (add-hook hook #'disable-flyspell-mode))
+
 
 (defun advice--extend-flyspell-generic-progmode-verify-with-more-rules (orig-fun &rest args)
   "It extends onto \\[flyspell-generic-progmode-verify] with additions that are specific to certain programming language modes.
