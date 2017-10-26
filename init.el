@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <04 Nov. 2017 -- 00:40 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <04 Nov. 2017 -- 00:41 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -340,6 +340,11 @@
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (setq js2-highlight-level 3)
 
+(defun current-buffer-major-mode nil
+  "Returns the current buffers major mode."
+  (with-current-buffer (current-buffer)
+    major-mode))
+
 
 
 ;; §2 §§2: Tabs, Alignment, etc.
@@ -646,26 +651,44 @@ Can be cancelled in an active mode with the universal prefix, C-u."
   (add-hook hook (lambda nil
                    (flyspell-mode -1))))
 
-(defun my-cc-mode-flyspell-prog-mode nil
-  "Specifically run `flyspell-mode', but use custom spell-checking verification."
-  (interactive)
-  (setq flyspell-generic-check-word-p 'my-flyspell-generic-progmode-verify)
-  (flyspell-mode t)
-  (run-hooks 'flyspell-prog-mode-hook))
-
-(defun my-flyspell-generic-progmode-verify nil
-  "My custom spell-checking verification, for use in `my-cc-mode-flyspell-prog-mode'."
-  ;; should return non-nil for places that needs to be checked
+(defun advice--extend-flyspell-generic-progmode-verify-with-more-rules (orig-fun &rest args)
+  "It extends onto \\[flyspell-generic-progmode-verify] with additions that are specific to certain programming language modes.
+The function returns nil for places that the spell checker should `not' check; otherwise the function returns t."
   (and
-   (let ((f (get-text-property (point) 'face)))
-     (memq f flyspell-prog-text-faces))
-   (not
-    (string-match "^#\\([:space:]*\\)include\\b" (thing-at-point 'line t)))))
+   (or
+    ;; the old predicate
+    (apply orig-fun args)
 
-;; flyspell-prog-mode for prog-mode
+    ;; new addition: `whitelist', additional regions to check
+    ;; TODO: add some whitelist rules
+    )
+
+   ;; new addition: `blacklist', regions that should not be tested
+   (let ((-current-major-mode (current-buffer-major-mode))
+         -current-target)
+     (not
+      ;; a t in this block means we matched a `blacklist' rule, but we need to
+      ;; negate that (to a nil) to signify to the outer `and' that we don't want
+      ;; to check the words (successful `blacklist')
+      ;;
+      ;; otherwise we went through each `rule' (the `progn' blocks) and each
+      ;; rule did not apply (gives nil), so the `or' will return nil and the
+      ;; `not' turns that to t to signify to the outer `and' that we only care
+      ;; for the result of the `whitelist' above.
+      (or
+       (progn
+         ;; exclude #include in C and C++
+         (setq -current-target (buffer-substring-no-properties
+                                (line-beginning-position)
+                                (line-end-position)))
+         (and
+          (or (equal -current-major-mode 'c-mode)
+              (equal -current-major-mode 'c++-mode))
+          (string-match "^#\\([[:space:]]*\\)include\\b" -current-target))))))))
+(advice-add 'flyspell-generic-progmode-verify :around
+            #'advice--extend-flyspell-generic-progmode-verify-with-more-rules)
+
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-;; custom c++ helper
-(add-hook 'c-mode-common-hook 'my-cc-mode-flyspell-prog-mode)
 
 
 
