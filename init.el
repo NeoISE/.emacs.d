@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Oct. 2017 -- 03:07 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <03 Nov. 2017 -- 16:55 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -392,11 +392,6 @@ Otherwise return nil."
                         (c-mode      . "bsd")
                         (csharp-mode . "bsd")
                         (other       . "linux")))
-
-;; disable comment-line offsets
-(add-hook 'after-init-hook (lambda nil
-                             (when (fboundp 'c-set-offset)
-                               (c-set-offset 'comment-intro 0))))
 
 ;; powershell indent variables
 (defvaralias 'powershell-indent 'tab-width)
