@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <03 Nov. 2017 -- 16:55 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <03 Nov. 2017 -- 23:46 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -411,38 +411,13 @@ Otherwise return nil."
             (setq fill-column 115)))
 
 ;; smart-tabs-mode config
-;; ;; add c-sharp to smart-tab-mode
-;; (smart-tabs-add-language-support csharp csharp-mode-hook
-;;   ((c-indent-line . c-basic-offset)
-;;    (c-indent-region . c-basic-offset)))
+;; add c-sharp to smart-tab-mode
+(smart-tabs-add-language-support csharp csharp-mode-hook
+  ((c-indent-line . c-basic-offset)
+   (c-indent-region . c-basic-offset)))
 
-;; ;; add powershell to smart-tab-mode
-;; (smart-tabs-add-language-support powershell powershell-mode-hook
-;;   ((powershell-indent-line . powershell-indent)))
-
-;; ;; activate smart-tab-mode
-;; (smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python
-;;                       'powershell 'ruby 'nxml)
-
-;; but, for some reason, we have to do it manually to turn on smart-tab-mode
-(dolist (mode-indent '(c-mode-common-hook
-                       js2-mode-hook
-                       cperl-mode-hook
-                       python-mode-hook
-                       ;; I give up on having tabs in PS
-                       ;;powershell-mode-hook
-                       ))
-  ;; add the minor mode to the major mode
-  (add-hook mode-indent 'smart-tabs-mode))
-
-;; add the indentation offset to smart-tabs
-(smart-tabs-advice c-indent-line c-basic-offset)
-(smart-tabs-advice c-indent-region c-basic-offset)
-(smart-tabs-advice js2-indent-line js2-basic-offset)
-(smart-tabs-advice cperl-indent-line cperl-indent-level)
-(smart-tabs-advice python-indent-line-1 python-indent)
-;; I give up on having tabs in PS
-;;(smart-tabs-advice powershell-indent-line powershell-indent)
+;; activate smart-tab-mode
+(smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python 'ruby)
 
 ;; soft wrapping
 (dolist (hook '(text-mode-hook
