@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Oct. 2017 -- 00:01 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <04 Nov. 2017 -- 00:43 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -340,6 +340,11 @@
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (setq js2-highlight-level 3)
 
+(defun current-buffer-major-mode nil
+  "Returns the current buffers major mode."
+  (with-current-buffer (current-buffer)
+    major-mode))
+
 
 
 ;; §2 §§2: Tabs, Alignment, etc.
@@ -612,44 +617,83 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 
 ;; §2 §§5: Spelling
 
-(setq ispell-program-name "aspell"
-      ispell-extra-args '("--sug-mode=ultra"
-                          "--run-together"
-                          "--run-together-limit=5"
-                          "--run-together-min=2")
-      ispell-list-command "--list")
+;; Since aspell is good with CamelCases, it is tried first before falling back
+;; on hunspell, and if none are available, then disable spell checking.
+(cond
+ ((executable-find "aspell")
+  ;; found aspell on this system
+  (setq ispell-program-name "aspell"
+        ispell-extra-args '("--sug-mode=ultra"
+                            "--run-together"
+                            "--run-together-limit=10"
+                            "--run-together-min=2")
+        ispell-list-command "--list"))
+
+ ((executable-find "hunspell")
+  ;; found hunspell on this system
+  (setq ispell-program-name "hunspell"
+        ispell-local-dictionary-alist '(("en_US" "[[:alpha:]]" "[^[:alpha:]]"
+                                         "[']" nil ("-d" "en_US") nil utf-8))
+        ispell-local-dictionary "en_US"))
+
+ (t
+  (setq ispell-program-name nil)
+  (message "Cannot find any spell checkers on this system...")))
 
 ;; performance speedup
 (setq flyspell-issue-message-flag nil)
 
 ;; enable flyspell in text mode
 (add-hook 'text-mode-hook 'flyspell-mode)
+
+(defun disable-flyspell-mode nil
+  (interactive)
+  (flyspell-mode -1))
+
 ;; but take it off of change-log and log-edit
 (dolist (hook '(change-log-mode-hook
                 log-edit-mode-hook))
-  (add-hook hook (lambda nil
-                   (flyspell-mode -1))))
+  (add-hook hook #'disable-flyspell-mode))
 
-(defun my-cc-mode-flyspell-prog-mode nil
-  "Specifically run `flyspell-mode', but use custom spell-checking verification."
-  (interactive)
-  (setq flyspell-generic-check-word-p 'my-flyspell-generic-progmode-verify)
-  (flyspell-mode t)
-  (run-hooks 'flyspell-prog-mode-hook))
 
-(defun my-flyspell-generic-progmode-verify nil
-  "My custom spell-checking verification, for use in `my-cc-mode-flyspell-prog-mode'."
-  ;; should return non-nil for places that needs to be checked
+(defun advice--extend-flyspell-generic-progmode-verify-with-more-rules (orig-fun &rest args)
+  "It extends onto \\[flyspell-generic-progmode-verify] with additions that are specific to certain programming language modes.
+The function returns nil for places that the spell checker should `not' check; otherwise the function returns t."
   (and
-   (let ((f (get-text-property (point) 'face)))
-     (memq f flyspell-prog-text-faces))
-   (not
-    (string-match "^#\\([:space:]*\\)include\\b" (thing-at-point 'line t)))))
+   (or
+    ;; the old predicate
+    (apply orig-fun args)
 
-;; flyspell-prog-mode for prog-mode
+    ;; new addition: `whitelist', additional regions to check
+    ;; TODO: add some whitelist rules
+    )
+
+   ;; new addition: `blacklist', regions that should not be tested
+   (let ((-current-major-mode (current-buffer-major-mode))
+         -current-target)
+     (not
+      ;; a t in this block means we matched a `blacklist' rule, but we need to
+      ;; negate that (to a nil) to signify to the outer `and' that we don't want
+      ;; to check the words (successful `blacklist')
+      ;;
+      ;; otherwise we went through each `rule' (the `progn' blocks) and each
+      ;; rule did not apply (gives nil), so the `or' will return nil and the
+      ;; `not' turns that to t to signify to the outer `and' that we only care
+      ;; for the result of the `whitelist' above.
+      (or
+       (progn
+         ;; exclude #include in C and C++
+         (setq -current-target (buffer-substring-no-properties
+                                (line-beginning-position)
+                                (line-end-position)))
+         (and
+          (or (equal -current-major-mode 'c-mode)
+              (equal -current-major-mode 'c++-mode))
+          (string-match "^#\\([[:space:]]*\\)include\\b" -current-target))))))))
+(advice-add 'flyspell-generic-progmode-verify :around
+            #'advice--extend-flyspell-generic-progmode-verify-with-more-rules)
+
 (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-;; custom c++ helper
-(add-hook 'c-mode-common-hook 'my-cc-mode-flyspell-prog-mode)
 
 
 
