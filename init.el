@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <03 Nov. 2017 -- 23:46 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <04 Nov. 2017 -- 00:07 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -202,6 +202,7 @@ Otherwise return nil."
 (require 'ac-js2)
 (require 'haskell-mode)
 (require 'haskell-snippets)
+(require 'ruby-mode)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
@@ -409,6 +410,10 @@ Otherwise return nil."
 (add-hook 'powershell-mode-hook
           (lambda nil
             (setq fill-column 115)))
+
+;; ruby indent variables
+(defvaralias 'ruby-indent-level 'tab-width)
+(setq-default ruby-indent-tabs-mode t)
 
 ;; smart-tabs-mode config
 ;; add c-sharp to smart-tab-mode
