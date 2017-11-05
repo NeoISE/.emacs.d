@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <08 Nov. 2017 -- 11:43 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <20 Dec. 2017 -- 00:46 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -236,9 +236,13 @@ Otherwise return nil."
       display-time-format "%a, %d %b %Y (%l:%M %p)")
 (display-time-mode t)
 
-;; one line at a time, 4 lines before the edge
-(setq scroll-step 1
-      scroll-margin 4)
+;; scrolling
+(setq scroll-step 1                     ; one line at a time
+      scroll-margin 4                   ; 4 lines before the edge
+      ;; in the event that we scroll with mouse
+      mouse-wheel-scroll-amount '(1 ((shift) . 4) ((control)))
+      mouse-wheel-follow-mouse t        ; just like other editors
+      mouse-wheel-progressive-speed t)
 
 ;; echo keys faster
 (setq echo-keystrokes 0.05)
