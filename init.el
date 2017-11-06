@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Dec. 2017 -- 00:46 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <20 Dec. 2017 -- 00:48 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -354,6 +354,17 @@ Otherwise return nil."
   "Returns the current buffers major mode."
   (with-current-buffer (current-buffer)
     major-mode))
+
+;; functions should be with its comment-docs
+(setq narrow-to-defun-include-comments t)
+
+;; enable commands
+(dolist (command '(narrow-to-region
+                   narrow-to-page
+                   narrow-to-defun
+                   upcase-region
+                   downcase-region))
+  (put command 'disabled nil))
 
 
 
