@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <04 Nov. 2017 -- 00:07 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <06 Nov. 2017 -- 22:33 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -86,6 +86,7 @@ Otherwise return nil."
                                   json-mode
                                   matlab-mode
                                   haskell-mode
+                                  lua-mode
 
                                   ;; minor modes for improved editing
                                   smart-tabs-mode
@@ -203,6 +204,7 @@ Otherwise return nil."
 (require 'haskell-mode)
 (require 'haskell-snippets)
 (require 'ruby-mode)
+(require 'lua-mode)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
@@ -415,14 +417,23 @@ Otherwise return nil."
 (defvaralias 'ruby-indent-level 'tab-width)
 (setq-default ruby-indent-tabs-mode t)
 
+;; lua indentations
+(defvaralias 'lua-indent-level 'tab-width)
+(setq-default lua-indent-string-contents nil)
+
 ;; smart-tabs-mode config
 ;; add c-sharp to smart-tab-mode
 (smart-tabs-add-language-support csharp csharp-mode-hook
   ((c-indent-line . c-basic-offset)
    (c-indent-region . c-basic-offset)))
 
+;; add lua to smart-tab-mode
+(smart-tabs-add-language-support lua lua-mode-hook
+  ((lua-indent-line . lua-indent-level)))
+
 ;; activate smart-tab-mode
-(smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python 'ruby)
+(smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python 'ruby
+                      'lua)
 
 ;; soft wrapping
 (dolist (hook '(text-mode-hook
