@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Dec. 2017 -- 00:48 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <20 Dec. 2017 -- 00:50 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -289,6 +289,27 @@ Otherwise return nil."
 (global-origami-mode)
 
 ;; improves ido
+(setq ido-enable-prefix nil
+      ido-enable-regexp t               ; more powerful
+      ido-enable-dot-prefix nil
+      ido-enable-flex-matching t
+      ido-enable-tramp-completion t
+      ido-enable-last-directory-history t
+      ido-use-filename-at-point nil
+      ido-use-url-at-point nil
+      ido-create-new-buffer 'always
+      ido-ignore-buffers '("\\` ")
+      ido-ignore-directories '("\\`\\.\\{1,2\\}\\(\\'\\|/\\)" ; . .. ./ ../
+                               "\\`CVS/"
+                               "-- \\(dummy\\|old\\)/"
+                               "\\`\\.\\(git\\|svn\\)/")
+      ido-ignore-files '("\\`\\.\\{1,2\\}\\(\\'\\|/\\)" ; . .. ./ ../
+                         "\\`CVS/"
+                         "\\`#"
+                         "\\`\\.#"      ; original ver. ".#" blocked C# and F#
+                         "-- \\(dummy\\|old\\)/"
+                         "\\`\\.\\(git\\|svn\\)/")
+      ido-ignore-extensions t)
 (ido-mode t)
 (ido-everywhere t)
 (ido-ubiquitous-mode t)
