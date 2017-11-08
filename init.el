@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <04 Nov. 2017 -- 00:43 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <08 Nov. 2017 -- 11:43 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -35,9 +35,19 @@
   "The minimum major version of emacs for this configuration.")
 (defconst emacs-minor-version-minimum 1
   "The minimum minor version of emacs for this configuration.")
-(when (or (< emacs-major-version emacs-major-version-minimum)
-          (and (= emacs-major-version emacs-major-version-minimum)
-               (< emacs-minor-version emacs-minor-version-minimum)))
+
+(defun current-version-below-minimum-p (major minor &optional allow-equal)
+  "Returns t if the `MAJOR' version supplied is greater than the current major revision of emacs or if the `MINOR' version is greater than the current minor revision of emacs when the `MAJOR' version match.
+If `ALLOW-EQUAL' is non-nil, then the `MINOR' version will return t also when it matches the current minor revision (in the case of the `MAJOR' versions are equal).
+Otherwise return nil."
+  (or (< emacs-major-version major)
+      (and (= emacs-major-version major)
+           (or (and allow-equal
+                    (<= emacs-minor-version minor))
+               (< emacs-minor-version minor)))))
+
+(when (current-version-below-minimum-p emacs-major-version-minimum
+                                       emacs-minor-version-minimum)
   (error "The minimum emacs version that will work with this config is %d.%d"
          emacs-major-version-minimum emacs-minor-version-minimum))
 
@@ -76,6 +86,7 @@
                                   json-mode
                                   matlab-mode
                                   haskell-mode
+                                  lua-mode
 
                                   ;; minor modes for improved editing
                                   smart-tabs-mode
@@ -192,6 +203,8 @@
 (require 'ac-js2)
 (require 'haskell-mode)
 (require 'haskell-snippets)
+(require 'ruby-mode)
+(require 'lua-mode)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
@@ -305,11 +318,6 @@
 (setq browse-kill-ring-highlight-current-entry t
       browse-kill-ring-show-preview t)
 
-;; tells alignment to use only spaces
-(defadvice align-regexp (around align-regexp-with-spaces activate)
-  (let ((indent-tabs-mode nil))
-    ad-do-it))
-
 ;; putting the function declaration in header-line
 (add-to-list 'semantic-default-submodes 'global-semantic-stickyfunc-mode)
 (semantic-mode t)
@@ -327,9 +335,7 @@
 (add-hook 'kill-buffer-query-functions 'prevent-scratch-buffer-kill)
 
 ;; bug fix: issue in EMACS below version 25.3, a fix is available below
-(when (or (< emacs-major-version 25)
-          (and (= emacs-major-version 25)
-               (< emacs-minor-version 3)))
+(when (current-version-below-minimum-p 25 3)
   (eval-after-load "enriched"
     '(defun enriched-decode-display-prop (start end &optional param)
        (list start end))))
@@ -358,14 +364,31 @@
               tab-stop-list nil         ; to enforce the above statement
               indent-tabs-mode t)
 
+(defun advice--force-use-spaces-only (orig-fun &rest args)
+  "Forces functions that have this advice active to be using only spaces without hard tabs."
+  (let ((indent-tabs-mode nil))
+    (apply orig-fun args)))
+
+;; prevent align* from inserting hard tabs that create alignment issues with
+;; mismatching tab sizes on different systems
+(dolist (command '(align
+                   align-regexp))
+  (advice-add command :around #'advice--force-use-spaces-only))
+
+(defun hook--force-use-spaces-only ()
+  (setq indent-tabs-mode nil))
+
 ;; no literal tabs for modes
 (dolist (hook '(emacs-lisp-mode-hook
                 lisp-mode-hook
                 lisp-interaction-mode-hook
 
-                html-mode-hook))
-  (add-hook hook (lambda nil
-                   (setq indent-tabs-mode nil))))
+                powershell-mode-hook
+
+                nxml-mode-hook
+                html-mode-hook
+                ))
+  (add-hook hook #'hook--force-use-spaces-only))
 
 ;; make offsets in cc-mode the same as tab-width
 (defvaralias 'c-basic-offset 'tab-width)
@@ -377,11 +400,6 @@
                         (c-mode      . "bsd")
                         (csharp-mode . "bsd")
                         (other       . "linux")))
-
-;; disable comment-line offsets
-(add-hook 'after-init-hook (lambda nil
-                             (when (fboundp 'c-set-offset)
-                               (c-set-offset 'comment-intro 0))))
 
 ;; powershell indent variables
 (defvaralias 'powershell-indent 'tab-width)
@@ -398,43 +416,29 @@
 
 (add-hook 'powershell-mode-hook
           (lambda nil
-            (setq fill-column 115)
-            ;; I give up on having tabs in PS
-            (setq indent-tabs-mode nil)))
+            (setq fill-column 115)))
+
+;; ruby indent variables
+(defvaralias 'ruby-indent-level 'tab-width)
+(setq-default ruby-indent-tabs-mode t)
+
+;; lua indentations
+(defvaralias 'lua-indent-level 'tab-width)
+(setq-default lua-indent-string-contents nil)
 
 ;; smart-tabs-mode config
-;; ;; add c-sharp to smart-tab-mode
-;; (smart-tabs-add-language-support csharp csharp-mode-hook
-;;   ((c-indent-line . c-basic-offset)
-;;    (c-indent-region . c-basic-offset)))
+;; add c-sharp to smart-tab-mode
+(smart-tabs-add-language-support csharp csharp-mode-hook
+  ((c-indent-line . c-basic-offset)
+   (c-indent-region . c-basic-offset)))
 
-;; ;; add powershell to smart-tab-mode
-;; (smart-tabs-add-language-support powershell powershell-mode-hook
-;;   ((powershell-indent-line . powershell-indent)))
+;; add lua to smart-tab-mode
+(smart-tabs-add-language-support lua lua-mode-hook
+  ((lua-indent-line . lua-indent-level)))
 
-;; ;; activate smart-tab-mode
-;; (smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python
-;;                       'powershell 'ruby 'nxml)
-
-;; but, for some reason, we have to do it manually to turn on smart-tab-mode
-(dolist (mode-indent '(c-mode-common-hook
-                       js2-mode-hook
-                       cperl-mode-hook
-                       python-mode-hook
-                       ;; I give up on having tabs in PS
-                       ;;powershell-mode-hook
-                       ))
-  ;; add the minor mode to the major mode
-  (add-hook mode-indent 'smart-tabs-mode))
-
-;; add the indentation offset to smart-tabs
-(smart-tabs-advice c-indent-line c-basic-offset)
-(smart-tabs-advice c-indent-region c-basic-offset)
-(smart-tabs-advice js2-indent-line js2-basic-offset)
-(smart-tabs-advice cperl-indent-line cperl-indent-level)
-(smart-tabs-advice python-indent-line-1 python-indent)
-;; I give up on having tabs in PS
-;;(smart-tabs-advice powershell-indent-line powershell-indent)
+;; activate smart-tab-mode
+(smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python 'ruby
+                      'lua)
 
 ;; soft wrapping
 (dolist (hook '(text-mode-hook
