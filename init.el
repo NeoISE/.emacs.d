@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Dec. 2017 -- 00:50 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <20 Dec. 2017 -- 00:51 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -287,6 +287,9 @@ Otherwise return nil."
 
 ;; activate origami, code-folding
 (global-origami-mode)
+
+;; like setting ido-create-new-buffer to 'always; force no confirmation
+(setq confirm-nonexistent-file-or-buffer nil)
 
 ;; improves ido
 (setq ido-enable-prefix nil
