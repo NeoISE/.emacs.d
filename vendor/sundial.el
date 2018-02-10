@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 13:35 (SE Asia Standard Time) by >
+;; Last Updated: <10 Feb. 2018 -- 13:52 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -270,11 +270,11 @@ trigger events at sunrise and/or sunset."
 	 (maybe-sunset-now    (car (nth 2 sunrise-sunset-today)))
 	 (maybe-sunrise-later (car (nth 1 sunrise-sunset-tomorrow))))
     (unless maybe-sunrise-now
-      (message "Sunrise time is missing (nil).")
-      (message "Could indicate that the location set through variables do not reflect current location."))
+      (error "%s" "Sunrise time is missing (nil).
+Could indicate that the location set through variables do not reflect current location."))
     (unless maybe-sunset-now
-      (message "Sunset time is missing (nil).")
-      (message "Could indicate that the location set through variables do not reflect current location."))
+      (error "%s" "Sunset time is missing (nil).
+Could indicate that the location set through variables do not reflect current location."))
 
     (let ((sunrise-now   (sundial--decimal-to-print-time maybe-sunrise-now))
 	  (sunset-now    (sundial--decimal-to-print-time maybe-sunset-now))
