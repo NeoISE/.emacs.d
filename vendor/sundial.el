@@ -1,9 +1,9 @@
-;;; sundial.el -- A powerful, yet simplistic means to trigger events at sunrise/sunset.
+;;; sundial.el -- A powerful means to trigger events at sunrise/sunset.
 ;;
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 15:37 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 15:44 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -12,16 +12,17 @@
 ;; Instead of focusing on *just* switching themes at the sunrise/sunset events,
 ;; we can trigger `hooks' instead, thus, allowing for more extensiblity.
 ;;
-;; I have been hacking away at ``theme-changer'' using emacs' built-in *advice* system
-;; and it has been a *cheap* solution to my needs, but this recent version (the one
-;; that I am forking right now) broke my cheap solution. I attempt to remedy my needs
-;; for a terse event-timer for sunrise/sunset and fix my broken `init.el' with this
-;; fork.
+;; I have been hacking away at ``theme-changer'' using emacs' built-in
+;; *advice* system and it has been a *cheap* solution to my needs, but this
+;; recent version (the one that I am forking right now) broke my cheap
+;; solution. I attempt to remedy my needs for a terse event-timer for
+;; sunrise/sunset and fix my broken `init.el' with this fork.
 ;;
-;; The original software had used the same language for its software license as that
-;; of the MIT license, which is the main license in use by the rest of my emacs config.
-;; Thus, this fork, in alignment with the original software and in conjunction with the
-;; rest of my emacs config, will remain under the MIT license.
+;; The original software had used the same language for its software license
+;; as that of the MIT license, which is the main license in use by the rest
+;; of my emacs config. Thus, this fork, in alignment with the original
+;; software and in conjunction with the rest of my emacs config, will remain
+;; under the MIT license.
 ;;
 ;;
 ;; The usage of `sundial.el' is as follows:
@@ -38,11 +39,14 @@
 ;;
 ;;
 ;; CAUTION!
-;; `sundial.el' is not immune to conflicting setting(s) of `calendar-longitude' and/or
-;; `calendar-latitude' with the local timezone of the OS. In the event, this does happen,
-;; the functions from `solar.el' (the basis for calculating the sunrise/sunset) will report
-;; that the *current day* will either have no sunrise or sunset (or even report that both
-;; will not occur).
+;; `sundial.el' is not immune to conflicting setting(s) of
+;; `calendar-longitude' and/or `calendar-latitude' with the local timezone
+;; of the OS. In the event, this does happen, the functions from `solar.el'
+;; (the basis for calculating the sunrise/sunset) will report that the
+;; *current day* will either have no sunrise or sunset (or even report that
+;; both will not occur). Furthermore, we assume that the user is using this
+;; package in a location with both sunrise and sunset.
+;;
 ;;
 ;;; Original Software:
 ;; ;;; theme-changer.el --- Sunrise/Sunset Theme Changer for Emacs
