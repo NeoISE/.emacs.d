@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Dec. 2017 -- 00:48 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 15:46 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -112,7 +112,6 @@ Otherwise return nil."
                                   ;; graphic improvements
                                   zenburn-theme
                                   solarized-theme
-                                  theme-changer
                                   smart-mode-line
                                   smart-mode-line-powerline-theme
                                   rainbow-mode
@@ -152,7 +151,11 @@ Otherwise return nil."
            ";; (require 'paradox)" "\n"
            ";; (setq paradox-github-token \"<token>\")" "\n\n"
            ";; (setq user-full-name \"first last\")" "\n"
-           ";; (setq user-mail-address \"your_name@mail.com\")" "\n")
+           ";; (setq user-mail-address \"your_name@mail.com\")" "\n\n"
+           ";; set up the location services" "\n"
+           ";; (setq calendar-location-name \"Home\"" "\n"
+           ";;       calendar-latitude 0.00" "\n"
+           ";;       calendar-longitude 0.00)" "\n\n")
    nil user-sensitive-file t)
   (message "Set up paradox integration asap"))
 (load user-sensitive-file)
@@ -205,6 +208,7 @@ Otherwise return nil."
 (require 'haskell-snippets)
 (require 'ruby-mode)
 (require 'lua-mode)
+(require 'sundial)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
@@ -213,11 +217,6 @@ Otherwise return nil."
 (when (eq system-type 'windows-nt)
   (setq-default default-directory (file-name-as-directory
                                    (getenv "UserProfile"))))
-
-;; set up the location services
-(setq calendar-location-name "Pasadena, TX"
-      calendar-latitude 29.65
-      calendar-longitude -95.15)
 
 ;; prefer UTF-8
 (setq default-buffer-file-coding-system 'utf-8
@@ -599,9 +598,9 @@ Can be cancelled in an active mode with the universal prefix, C-u."
     (require 'auto-complete-c-headers)
 
     (setq my-c-c++-mode-sources (append '(ac-source-clang-async)
-                                          my-c-c++-mode-sources))
+                                        my-c-c++-mode-sources))
     (add-to-list 'my-c-c++-mode-sources '(ac-source-c-headers) t)
-    
+
     (defun my-auto-completion-c-mode-hook nil
       "Custom sources for C and C++"
       (setq ac-sources (append my-c-c++-mode-sources
@@ -847,12 +846,12 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
     ;; redo the hook when daemon process
     (remove-hook 'after-make-frame-functions 'my-initial-frame-setup)
     (add-hook 'after-make-frame-functions 'my-default-frame-setup))
-  
+
   (let ((frm (or frame
                  (selected-frame))))
     (if (display-graphic-p frm)
         ;; the frame is graphical
-        
+
         (progn
           (let* ((frame-resize-pixelwise t)
                  (max-height (maximum-pixel-height frm))
@@ -877,7 +876,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                    (eq available-color 'pseudo-color))
                ;; a limited number of colors, used as an indicator of TTY
                (menu-bar-mode -1)
-               
+
                ;; change color
                (custom-set-faces
                 '(mode-line-buffer-id ((t (:background "green"
@@ -894,13 +893,13 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                (global-set-key (kbd "<f14> m a") 'mark-whole-buffer)
                (global-set-key (kbd "<f14> m s") 'set-mark-command)
                )
-              
+
               ((or (eq available-color 'true-color)
                    (eq available-color 'direct-color))
                ;; a large available set of colors, good for themes
                (my-color-and-graphics-setup)
                )
-              
+
               (t
                (message "No support the following color class: %s"
                         available-color))
@@ -943,7 +942,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (require 'solarized-light-theme)
   (require 'my-solarized-light)
   (require 'my-zenburn)
-  (require 'theme-changer)
   (require 'smart-mode-line)
   (require 'smart-mode-line-powerline-theme)
   (require 'smart-mode-line-light-powerline-theme)
@@ -984,13 +982,13 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                '("^:Git:\\(.*\\)/src/main/java/" ":G/\\1/SMJ:") t)
   (add-to-list 'sml/replacer-regexp-list
                '("^\\(.*\\)/\\(.*?\\)/src/main/java/" ":\\2/SMJ:") t)
-  
+
   ;; highlight the current line for easier preview
   (global-hl-line-mode)
 
   ;; have colorful text
   (add-hook 'prog-mode-hook 'rainbow-mode)
-  
+
   ;; do some margin fiddling with visual-fill-column
   (global-visual-fill-column-mode)
   (setq-default visual-fill-column-fringes-outside-margins nil)
@@ -1029,41 +1027,42 @@ Thus, this advice is created to get the margins spaced correctly."
         )
 
   ;; changes the theme from light to dark with time
-  (defun change-theme--reload-sml-and-theme-config (orig-funct &rest args)
-    (let*
-        ((today (theme-changer-sunrise-sunset-times (theme-changer-today)))
-         (sunrise-today (first today))
-         (sunset-today (second today)))
-      (if (theme-changer-daytime-p sunrise-today sunset-today)
-          (progn
-            ;; turn off previous sml themes
-            (disable-theme 'smart-mode-line-light-powerline)
-            (disable-theme 'smart-mode-line-powerline)
-            ;; run the original function
-            (apply orig-funct args)
-            ;; turn on sml
-            (setq sml/theme 'light-powerline)
-            (sml/setup)
-            ;; customize the theme
-            (my-solarized-light-config)
-            (markdown-update-header-faces markdown-header-scaling
-                                          markdown-header-scaling-values))
-        (progn
-          ;; turn off previous sml themes
-          (disable-theme 'smart-mode-line-light-powerline)
-          (disable-theme 'smart-mode-line-powerline)
-          ;; run the original function
-          (apply orig-funct args)
-          ;; turn on sml
-          (setq sml/theme 'powerline)
-          (sml/setup)
-          ;; customize the theme
-          (my-zenburn-config)
-          (markdown-update-header-faces markdown-header-scaling
-                                        markdown-header-scaling-values))
-        )))
-  (advice-add 'change-theme :around #'change-theme--reload-sml-and-theme-config)
-  (change-theme 'solarized-light 'zenburn)
+  (load-theme 'solarized-light nil t)
+  (load-theme 'zenburn nil t)
+
+  (defun my-daytime-config ()
+    ;; turn off previous sml themes
+    (disable-theme 'smart-mode-line-light-powerline)
+    (disable-theme 'smart-mode-line-powerline)
+    ;; turn off night theme and on day theme
+    (disable-theme 'zenburn)
+    (enable-theme 'solarized-light)
+    ;; turn on sml
+    (setq sml/theme 'light-powerline)
+    (sml/setup)
+    ;; customize the theme
+    (my-solarized-light-config)
+    (markdown-update-header-faces markdown-header-scaling
+                                  markdown-header-scaling-values))
+
+  (defun my-nighttime-config ()
+    ;; turn off previous sml themes
+    (disable-theme 'smart-mode-line-light-powerline)
+    (disable-theme 'smart-mode-line-powerline)
+    ;; turn off day theme and on night theme
+    (disable-theme 'solarized-light)
+    (enable-theme 'zenburn)
+    ;; turn on sml
+    (setq sml/theme 'powerline)
+    (sml/setup)
+    ;; customize the theme
+    (my-zenburn-config)
+    (markdown-update-header-faces markdown-header-scaling
+                                  markdown-header-scaling-values))
+
+  (add-hook 'sundial-daytime-hook #'my-daytime-config)
+  (add-hook 'sundial-nighttime-hook #'my-nighttime-config)
+  (sundial-start)
 
   ;; increase line space for readability
   (setq-default line-spacing 0.25)
@@ -1114,7 +1113,7 @@ Thus, this advice is created to get the margins spaced correctly."
           (if (member "Hack" (font-family-list))
               (add-to-list frm-alist '(font . "Hack-10"))
             (add-to-list frm-alist '(font . "DejaVu Sans Mono-10")))))
-      
+
       (add-hook 'after-make-frame-functions 'my-initial-frame-setup))
   ;; when not started as a daemon
   (progn
@@ -1131,7 +1130,7 @@ Thus, this advice is created to get the margins spaced correctly."
       (if (member "Hack" (font-family-list))
           (set-frame-font "Hack-10" t t)
         (set-frame-font "DejaVu Sans Mono-10" t t)))
-    
+
     (my-initial-frame-setup)
     (add-hook 'after-make-frame-functions 'my-default-frame-setup)))
 
