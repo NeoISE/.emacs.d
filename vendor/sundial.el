@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 15:02 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 15:37 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -27,14 +27,14 @@
 ;; The usage of `sundial.el' is as follows:
 ;;
 ;; ;; Starts off the cascading sundial event-timer.
-;; (add-hook sundial-daytime-hook 'some-function)
-;; (add-hook sundial-nighttime-hook 'some-other-function)
+;; (add-hook 'sundial-daytime-hook #'some-function)
+;; (add-hook 'sundial-nighttime-hook #'some-other-function)
 ;; (sundial-start)
 ;;
 ;; ;; Can even add functions to hooks even after the event-timer is in play.
 ;; ;; However, the new functions on the hooks will only run (take effect) after
 ;; ;; the next sunrise and/or sunset event occurs.
-;; (add-hook sundial-daytime-hook 'another-function)
+;; (add-hook 'sundial-daytime-hook #'another-function)
 ;;
 ;;
 ;; CAUTION!
@@ -285,7 +285,7 @@ Could indicate that the location set through variables do not reflect current lo
              (run-at-time sunrise-now nil #'sundial-start nil))
             ((sundial--time-less-p current-time sunset-now)
              ;; Between sunrise and sunset; still day
-             (run-hooks 'sundial-daylight-hook)
+             (run-hooks 'sundial-daytime-hook)
              (run-at-time sunset-now nil #'sundial-start nil))
             (t
              ;; Not before sunrise/sunset, thus, before tomorrow's sunrise at today's nighttime
