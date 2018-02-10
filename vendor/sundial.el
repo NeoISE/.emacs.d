@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 13:52 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 14:48 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -234,16 +234,16 @@ T1 is the same time as T2, and 1 indicates that T1 is after T2.
 
 Assumes that T1 and T2 follow the format of HH:MM in 24-hour format."
   (let ((t1-parts (mapcar 'string-to-number (split-string t1 ":")))
-	(t2-parts (mapcar 'string-to-number (split-string t2 ":"))))
+        (t2-parts (mapcar 'string-to-number (split-string t2 ":"))))
     (cond ((or (< (car t1-parts) (car t2-parts))
-	    (and (= (car t1-parts) (car t2-parts))
-		 (< (cadr t1-parts) (cadr t2-parts))))
-	   -1)
-	  ((or (> (car t1-parts) (car t2-parts))
-	      (and (= (car t1-parts) (car t2-parts))
-		   (> (cadr t1-parts) (cadr t2-parts))))
-	   1)
-	  (t 0))))
+               (and (= (car t1-parts) (car t2-parts))
+                    (< (cadr t1-parts) (cadr t2-parts))))
+           -1)
+          ((or (> (car t1-parts) (car t2-parts))
+               (and (= (car t1-parts) (car t2-parts))
+                    (> (cadr t1-parts) (cadr t2-parts))))
+           1)
+          (t 0))))
 
 (defun sundial--time-less-p (t1 t2)
   "Returns t if and only if T1 compared to T2 using `sundial--compare-time-strings' returns -1."
@@ -258,17 +258,17 @@ Assumes that T1 and T2 follow the format of HH:MM in 24-hour format."
   "Triggers the start of the sundial, thus, starting the ability to
 trigger events at sunrise and/or sunset."
   (let* ((full-time-list (split-string (format-time-string "%m,%d,%Y,%H:%M") ","))
-	 (today          (butlast full-time-list))
-	 (current-time   (last full-time-list))
-	 (tomorrow       (calendar-gregorian-from-absolute
-			  (+ 1 (calendar-absolute-from-gregorian today))))
+         (today          (mapcar 'string-to-number (butlast full-time-list)))
+         (current-time   (last full-time-list))
+         (tomorrow       (calendar-gregorian-from-absolute
+                          (+ 1 (calendar-absolute-from-gregorian today))))
 
-	 (sunrise-sunset-today    (solar-sunrise-sunset today))
-	 (sunrise-sunset-tomorrow (solar-sunrise-sunset tomorrow))
+         (sunrise-sunset-today    (solar-sunrise-sunset today))
+         (sunrise-sunset-tomorrow (solar-sunrise-sunset tomorrow))
 
-	 (maybe-sunrise-now   (car (nth 1 sunrise-sunset-today)))
-	 (maybe-sunset-now    (car (nth 2 sunrise-sunset-today)))
-	 (maybe-sunrise-later (car (nth 1 sunrise-sunset-tomorrow))))
+         (maybe-sunrise-now   (car (nth 0 sunrise-sunset-today)))
+         (maybe-sunset-now    (car (nth 1 sunrise-sunset-today)))
+         (maybe-sunrise-later (car (nth 0 sunrise-sunset-tomorrow))))
     (unless maybe-sunrise-now
       (error "%s" "Sunrise time is missing (nil).
 Could indicate that the location set through variables do not reflect current location."))
@@ -277,29 +277,29 @@ Could indicate that the location set through variables do not reflect current lo
 Could indicate that the location set through variables do not reflect current location."))
 
     (let ((sunrise-now   (sundial--decimal-to-print-time maybe-sunrise-now))
-	  (sunset-now    (sundial--decimal-to-print-time maybe-sunset-now))
-	  (sunrise-later (sundial--decimal-to-print-time maybe-sunrise-later)))
+          (sunset-now    (sundial--decimal-to-print-time maybe-sunset-now))
+          (sunrise-later (sundial--decimal-to-print-time maybe-sunrise-later)))
       (cond ((sundial--time-less-p current-time sunrise-now)
-	     ;; Between 0AM and sunrise; still night
-	     (run-hooks sundial-nighttime-hook)
-	     (run-at-time sunrise-now nil sundial-start nil))
-	    ((sundial--time-less-p current-time sunset-now)
-	     ;; Between sunrise and sunset; still day
-	     (run-hooks sundial-daylight-hook)
-	     (run-at-time sunset-now nil sundial-start nil))
-	    (t
-	     ;; Not before sunrise/sunset, thus, before tomorrow's sunrise at today's nighttime
-	     (run-hooks sundial-nighttime-hook)
-	     (let* ((tomorrow-time-split (split-string sunrise-later ":"))
-		    (tomorrow-hour (nth 1 tomorrow-time-split))
-		    (tomorrow-min (nth 2 tomorrow-time-split))
-		    (tomorrow-execute-time (encode-time 0
-							tomorrow-min
-							tomorrow-hour
-							(nth 2 tomorrow)
-							(nth 1 tomorrow)
-							(nth 3 tomorrow))))
-	       (run-at-time tomorrow-execute-time nil sundial-start nil)))))))
+             ;; Between 0AM and sunrise; still night
+             (run-hooks sundial-nighttime-hook)
+             (run-at-time sunrise-now nil sundial-start nil))
+            ((sundial--time-less-p current-time sunset-now)
+             ;; Between sunrise and sunset; still day
+             (run-hooks sundial-daylight-hook)
+             (run-at-time sunset-now nil sundial-start nil))
+            (t
+             ;; Not before sunrise/sunset, thus, before tomorrow's sunrise at today's nighttime
+             (run-hooks sundial-nighttime-hook)
+             (let* ((tomorrow-time-split (split-string sunrise-later ":"))
+                    (tomorrow-hour (nth 0 tomorrow-time-split))
+                    (tomorrow-min (nth 1 tomorrow-time-split))
+                    (tomorrow-execute-time (encode-time 0
+                                                        tomorrow-min
+                                                        tomorrow-hour
+                                                        (nth 1 tomorrow)
+                                                        (nth 0 tomorrow)
+                                                        (nth 2 tomorrow))))
+               (run-at-time tomorrow-execute-time nil sundial-start nil)))))))
 
 (provide 'sundial)
 
