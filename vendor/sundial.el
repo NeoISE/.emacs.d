@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 14:48 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 15:02 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -259,7 +259,7 @@ Assumes that T1 and T2 follow the format of HH:MM in 24-hour format."
 trigger events at sunrise and/or sunset."
   (let* ((full-time-list (split-string (format-time-string "%m,%d,%Y,%H:%M") ","))
          (today          (mapcar 'string-to-number (butlast full-time-list)))
-         (current-time   (last full-time-list))
+         (current-time   (car (last full-time-list)))
          (tomorrow       (calendar-gregorian-from-absolute
                           (+ 1 (calendar-absolute-from-gregorian today))))
 
@@ -281,15 +281,15 @@ Could indicate that the location set through variables do not reflect current lo
           (sunrise-later (sundial--decimal-to-print-time maybe-sunrise-later)))
       (cond ((sundial--time-less-p current-time sunrise-now)
              ;; Between 0AM and sunrise; still night
-             (run-hooks sundial-nighttime-hook)
-             (run-at-time sunrise-now nil sundial-start nil))
+             (run-hooks 'sundial-nighttime-hook)
+             (run-at-time sunrise-now nil #'sundial-start nil))
             ((sundial--time-less-p current-time sunset-now)
              ;; Between sunrise and sunset; still day
-             (run-hooks sundial-daylight-hook)
-             (run-at-time sunset-now nil sundial-start nil))
+             (run-hooks 'sundial-daylight-hook)
+             (run-at-time sunset-now nil #'sundial-start nil))
             (t
              ;; Not before sunrise/sunset, thus, before tomorrow's sunrise at today's nighttime
-             (run-hooks sundial-nighttime-hook)
+             (run-hooks 'sundial-nighttime-hook)
              (let* ((tomorrow-time-split (split-string sunrise-later ":"))
                     (tomorrow-hour (nth 0 tomorrow-time-split))
                     (tomorrow-min (nth 1 tomorrow-time-split))
@@ -299,7 +299,7 @@ Could indicate that the location set through variables do not reflect current lo
                                                         (nth 1 tomorrow)
                                                         (nth 0 tomorrow)
                                                         (nth 2 tomorrow))))
-               (run-at-time tomorrow-execute-time nil sundial-start nil)))))))
+               (run-at-time tomorrow-execute-time nil #'sundial-start nil)))))))
 
 (provide 'sundial)
 

@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 14:20 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 14:55 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -152,7 +152,11 @@ Otherwise return nil."
            ";; (require 'paradox)" "\n"
            ";; (setq paradox-github-token \"<token>\")" "\n\n"
            ";; (setq user-full-name \"first last\")" "\n"
-           ";; (setq user-mail-address \"your_name@mail.com\")" "\n")
+           ";; (setq user-mail-address \"your_name@mail.com\")" "\n\n"
+           ";; set up the location services" "\n"
+           ";; (setq calendar-location-name \"Home\"" "\n"
+           ";;       calendar-latitude 0.00" "\n"
+           ";;       calendar-longitude 0.00)" "\n\n")
    nil user-sensitive-file t)
   (message "Set up paradox integration asap"))
 (load user-sensitive-file)
@@ -214,11 +218,6 @@ Otherwise return nil."
 (when (eq system-type 'windows-nt)
   (setq-default default-directory (file-name-as-directory
                                    (getenv "UserProfile"))))
-
-;; set up the location services
-(setq calendar-location-name "Pasadena, TX"
-      calendar-latitude 29.65
-      calendar-longitude -95.15)
 
 ;; prefer UTF-8
 (setq default-buffer-file-coding-system 'utf-8
