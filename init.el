@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 14:55 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Feb. 2018 -- 15:46 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -112,7 +112,6 @@ Otherwise return nil."
                                   ;; graphic improvements
                                   zenburn-theme
                                   solarized-theme
-                                  ;; theme-changer
                                   smart-mode-line
                                   smart-mode-line-powerline-theme
                                   rainbow-mode
@@ -943,7 +942,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (require 'solarized-light-theme)
   (require 'my-solarized-light)
   (require 'my-zenburn)
-  ;; (require 'theme-changer)
   (require 'smart-mode-line)
   (require 'smart-mode-line-powerline-theme)
   (require 'smart-mode-line-light-powerline-theme)
@@ -1065,42 +1063,6 @@ Thus, this advice is created to get the margins spaced correctly."
   (add-hook 'sundial-daytime-hook #'my-daytime-config)
   (add-hook 'sundial-nighttime-hook #'my-nighttime-config)
   (sundial-start)
-
-  ;; (defun change-theme--reload-sml-and-theme-config (orig-funct &rest args)
-  ;;   (let*
-  ;;       ((today (theme-changer-sunrise-sunset-times (theme-changer-today)))
-  ;;        (sunrise-today (first today))
-  ;;        (sunset-today (second today)))
-  ;;     (if (theme-changer-daytime-p sunrise-today sunset-today)
-  ;;         (progn
-  ;;           ;; turn off previous sml themes
-  ;;           (disable-theme 'smart-mode-line-light-powerline)
-  ;;           (disable-theme 'smart-mode-line-powerline)
-  ;;           ;; run the original function
-  ;;           (apply orig-funct args)
-  ;;           ;; turn on sml
-  ;;           (setq sml/theme 'light-powerline)
-  ;;           (sml/setup)
-  ;;           ;; customize the theme
-  ;;           (my-solarized-light-config)
-  ;;           (markdown-update-header-faces markdown-header-scaling
-  ;;                                         markdown-header-scaling-values))
-  ;;       (progn
-  ;;         ;; turn off previous sml themes
-  ;;         (disable-theme 'smart-mode-line-light-powerline)
-  ;;         (disable-theme 'smart-mode-line-powerline)
-  ;;         ;; run the original function
-  ;;         (apply orig-funct args)
-  ;;         ;; turn on sml
-  ;;         (setq sml/theme 'powerline)
-  ;;         (sml/setup)
-  ;;         ;; customize the theme
-  ;;         (my-zenburn-config)
-  ;;         (markdown-update-header-faces markdown-header-scaling
-  ;;                                       markdown-header-scaling-values))
-  ;;       )))
-  ;; (advice-add 'change-theme :around #'change-theme--reload-sml-and-theme-config)
-  ;; (change-theme 'solarized-light 'zenburn)
 
   ;; increase line space for readability
   (setq-default line-spacing 0.25)
