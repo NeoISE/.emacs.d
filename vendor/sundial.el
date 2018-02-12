@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Feb. 2018 -- 15:44 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <12 Feb. 2018 -- 14:42 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -226,37 +226,42 @@ by the variable `solar-error' and calculating functions
 `calendar-latitude' and `calendar-longitude').
 
 The accuracy of the time of sunrise and sunset is wholly determined
- by the variable `solar-error' and calculating functions
+by the variable `solar-error' and calculating functions
 \(i.e. `solar-sunrise-sunset') defined in the file `solar.el'.")
 
+(defun sundial--decimal-to-print-time (time)
+  "Takes the time in the format HH.ff* and returns in the form HH:MM (24-hour format).
+
+This is the inverse of the function `sundial--print-to-decimal-time'."
+  (solar-daylight time))
+
+(defun sundial--print-to-decimal-time (time)
+  "Takes the time in the format HH:MM and returns in the form HH.ff* (24-hour format).
+
+This is the inverse of the function `sundial--decimal-to-print-time'."
+  (let ((temp (mapcar 'string-to-number (split-string time ":"))))
+    (+ (nth 0 temp)
+       (/ (nth 1 temp) 60.0))))
 
 (defun sundial--compare-time-strings (t1 t2)
-  "Compares time T1 to T2.
+  "Compares time T1 to time T2, where the times given are strings of form HH:MM.
 
-A return value of -1 indicates that T1 is before T2, 0 indicates that
-T1 is the same time as T2, and 1 indicates that T1 is after T2.
+A return value of
+-1 indicates that T1 is before T2;
+ 0 indicates that T1 is the same time as T2;
+ 1 indicates that T1 is after T2.
 
-Assumes that T1 and T2 follow the format of HH:MM in 24-hour format."
-  (let ((t1-parts (mapcar 'string-to-number (split-string t1 ":")))
-        (t2-parts (mapcar 'string-to-number (split-string t2 ":"))))
-    (cond ((or (< (car t1-parts) (car t2-parts))
-               (and (= (car t1-parts) (car t2-parts))
-                    (< (cadr t1-parts) (cadr t2-parts))))
-           -1)
-          ((or (> (car t1-parts) (car t2-parts))
-               (and (= (car t1-parts) (car t2-parts))
-                    (> (cadr t1-parts) (cadr t2-parts))))
-           1)
+This function assumes that T1 and T2 follow the format of HH:MM in 24-hour
+format."
+  (let* ((comparable-t1 (sundial--print-to-decimal-time t1))
+         (comparable-t2 (sundial--print-to-decimal-time t2)))
+    (cond ((< comparable-t1 comparable-t2) -1)
+          ((> comparable-t1 comparable-t2)  1)
           (t 0))))
 
 (defun sundial--time-less-p (t1 t2)
-  "Returns t if and only if T1 compared to T2 using `sundial--compare-time-strings' returns -1."
+  "Returns t if and only if time T1 is before time T2."
   (= -1 (sundial--compare-time-strings t1 t2)))
-
-(defun sundial--decimal-to-print-time (time)
-  "Takes the time in the format HH.ff* and returns in the form HH:MM (24-hour format)."
-  (solar-daylight time))
-
 
 (defun sundial-start ()
   "Triggers the start of the sundial, thus, starting the ability to
@@ -284,26 +289,29 @@ Could indicate that the location set through variables do not reflect current lo
           (sunset-now    (sundial--decimal-to-print-time maybe-sunset-now))
           (sunrise-later (sundial--decimal-to-print-time maybe-sunrise-later)))
       (cond ((sundial--time-less-p current-time sunrise-now)
-             ;; Between 0AM and sunrise; still night
-             (run-hooks 'sundial-nighttime-hook)
-             (run-at-time sunrise-now nil #'sundial-start nil))
+             (prog1
+                 ;; Between 0AM and sunrise; still night
+                 (run-hooks 'sundial-nighttime-hook)
+               (run-at-time sunrise-now nil #'sundial-start)))
             ((sundial--time-less-p current-time sunset-now)
-             ;; Between sunrise and sunset; still day
-             (run-hooks 'sundial-daytime-hook)
-             (run-at-time sunset-now nil #'sundial-start nil))
+             (prog1
+                 ;; Between sunrise and sunset; still day
+                 (run-hooks 'sundial-daytime-hook)
+               (run-at-time sunset-now nil #'sundial-start)))
             (t
-             ;; Not before sunrise/sunset, thus, before tomorrow's sunrise at today's nighttime
-             (run-hooks 'sundial-nighttime-hook)
-             (let* ((tomorrow-time-split (split-string sunrise-later ":"))
-                    (tomorrow-hour (nth 0 tomorrow-time-split))
-                    (tomorrow-min (nth 1 tomorrow-time-split))
-                    (tomorrow-execute-time (encode-time 0
-                                                        tomorrow-min
-                                                        tomorrow-hour
-                                                        (nth 1 tomorrow)
-                                                        (nth 0 tomorrow)
-                                                        (nth 2 tomorrow))))
-               (run-at-time tomorrow-execute-time nil #'sundial-start nil)))))))
+             (prog1
+                 ;; Thus, before tomorrow's sunrise at today's nighttime
+                 (run-hooks 'sundial-nighttime-hook)
+               (let* ((tomorrow-time-split   (split-string sunrise-later ":"))
+                      (tomorrow-hour         (nth 0 tomorrow-time-split))
+                      (tomorrow-min          (nth 1 tomorrow-time-split))
+                      (tomorrow-execute-time (encode-time 0
+                                                          tomorrow-min
+                                                          tomorrow-hour
+                                                          (nth 1 tomorrow)
+                                                          (nth 0 tomorrow)
+                                                          (nth 2 tomorrow))))
+                 (run-at-time tomorrow-execute-time nil #'sundial-start))))))))
 
 (provide 'sundial)
 
