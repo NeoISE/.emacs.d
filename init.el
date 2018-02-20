@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Feb. 2018 -- 12:03 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <20 Feb. 2018 -- 13:50 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -14,7 +14,9 @@
 ;; information do fall through the cracks around here since the beginning.
 ;;
 ;; Table Of Contents:
-;;  + §0: Version Requirements
+;;  + §0: Preliminary Configs
+;;     - §0 §§0: Version Requirements
+;;     - §0 §§1: Misc. Preparations
 ;;  + §1: Package Management
 ;;  + §2: General Configs
 ;;     - §2 §§0: Load-Path
@@ -28,7 +30,9 @@
 ;;
 ;;; Code:
 
-;; §0: Version Requirements
+;; §0: Preliminary Configs
+
+;; §0 §§0: Version Requirements
 
 ;; Compare emacs version to make sure everything is able to work
 (defconst emacs-major-version-minimum 25
@@ -44,6 +48,27 @@
 (when (version< emacs-version emacs-version-minimum)
   (error "The minimum emacs version that will work with this config is \"%s\"."
          emacs-version-minimum))
+
+
+;; §0 §§1: Misc. Preparations
+
+(defun advice--timestamp-message (format-string &rest args)
+  "Provides for time-stamping the messages in the `*Messages*' buffer.
+
+Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
+  * Replaces the first line conditional with a check for `nil' format-string; to me, the first conditional did nothing and the new check prevents empty time-stamps (when message's format is `nil')
+  * Replaces the `if' statement to a `when' statement because there was no else clause to begin with.
+  * Reduced the time-string to being just a call to the function `format-time-string'."
+  (when format-string
+    (let ((deactivate-mark nil)
+          (inhibit-read-only t))
+      (with-current-buffer "*Messages*"
+        (goto-char (point-max))
+        (when (not (bolp))
+          (newline))
+        (insert "[" (format-time-string "%FT%T.%6N") "] ")))))
+
+(advice-add 'message :before 'advice--timestamp-message)
 
 
 
