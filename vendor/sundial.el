@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Feb. 2018 -- 22:04 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <21 Feb. 2018 -- 21:15 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -312,8 +312,8 @@ Could indicate that the location set through variables do not reflect current lo
                  (run-hooks 'sundial-nighttime-hook)
                (let* ((t-time (mapcar #'string-to-number
                                       (split-string sunrise-later ":")))
-                      (t-hour (nth 0 tomorrow-time-split))
-                      (t-min  (nth 1 tomorrow-time-split))
+                      (t-hour (nth 0 t-time))
+                      (t-min  (nth 1 t-time))
 
                       (tomorrow-execute-time (encode-time 0
                                                           t-min
