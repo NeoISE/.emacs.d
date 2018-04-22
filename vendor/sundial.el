@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <12 Feb. 2018 -- 14:42 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <21 Feb. 2018 -- 21:15 (SE Asia Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -16,7 +16,15 @@
 ;; *advice* system and it has been a *cheap* solution to my needs, but this
 ;; recent version (the one that I am forking right now) broke my cheap
 ;; solution. I attempt to remedy my needs for a terse event-timer for
-;; sunrise/sunset and fix my broken `init.el' with this fork.
+;; sunrise/sunset and fix my (previously) broken `init.el' with this fork.
+;;
+;; The original logic behind the triggering on sunrise/sunset was retained
+;; to an extent (i.e. using `run-at-time', etc.) whereas the logic of the
+;; theme change was removed completely--changed for hooks instead. Thus,
+;; this software feels more like a complete rewrite--retaining only a small,
+;; but critical part--rather than a simple fork of the original software.
+;; Nonetheless, this software is a derived work of the original software,
+;; ``theme-changer''.
 ;;
 ;; The original software had used the same language for its software license
 ;; as that of the MIT license, which is the main license in use by the rest
@@ -302,12 +310,14 @@ Could indicate that the location set through variables do not reflect current lo
              (prog1
                  ;; Thus, before tomorrow's sunrise at today's nighttime
                  (run-hooks 'sundial-nighttime-hook)
-               (let* ((tomorrow-time-split   (split-string sunrise-later ":"))
-                      (tomorrow-hour         (nth 0 tomorrow-time-split))
-                      (tomorrow-min          (nth 1 tomorrow-time-split))
+               (let* ((t-time (mapcar #'string-to-number
+                                      (split-string sunrise-later ":")))
+                      (t-hour (nth 0 t-time))
+                      (t-min  (nth 1 t-time))
+
                       (tomorrow-execute-time (encode-time 0
-                                                          tomorrow-min
-                                                          tomorrow-hour
+                                                          t-min
+                                                          t-hour
                                                           (nth 1 tomorrow)
                                                           (nth 0 tomorrow)
                                                           (nth 2 tomorrow))))
