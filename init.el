@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <20 Feb. 2018 -- 13:50 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <21 Sep. 2018 -- 00:35 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -56,13 +56,14 @@
   "Provides for time-stamping the messages in the `*Messages*' buffer.
 
 Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
-  * Replaces the first line conditional with a check for `nil' format-string; to me, the first conditional did nothing and the new check prevents empty time-stamps (when message's format is `nil')
+  * Uses the built-in function `messages-buffer' instead of direct name.
+  * Replaces the first line conditional with a check for `nil' format-string; to me, the first conditional did nothing and the new check will more likely to prevent empty time-stamps (when message's format is `nil')
   * Replaces the `if' statement to a `when' statement because there was no else clause to begin with.
   * Reduced the time-string to being just a call to the function `format-time-string'."
   (when format-string
     (let ((deactivate-mark nil)
           (inhibit-read-only t))
-      (with-current-buffer "*Messages*"
+      (with-current-buffer (messages-buffer)
         (goto-char (point-max))
         (when (not (bolp))
           (newline))
