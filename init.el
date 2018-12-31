@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Sep. 2018 -- 00:35 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <24 Sep. 2018 -- 22:45 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -35,7 +35,7 @@
 ;; §0 §§0: Version Requirements
 
 ;; Compare emacs version to make sure everything is able to work
-(defconst emacs-major-version-minimum 25
+(defconst emacs-major-version-minimum 26
   "The minimum major version of emacs for this configuration.")
 (defconst emacs-minor-version-minimum 1
   "The minimum minor version of emacs for this configuration.")
@@ -46,8 +46,10 @@
   "The full version string for the minimum version of emacs for this config.")
 
 (when (version< emacs-version emacs-version-minimum)
-  (error "The minimum emacs version that will work with this config is \"%s\"."
-         emacs-version-minimum))
+  (error "The minimum emacs version that will work with this config is \"%s\";
+Your current emacs version is \"%s\".
+."
+         emacs-version-minimum emacs-version))
 
 
 ;; §0 §§1: Misc. Preparations
@@ -57,7 +59,8 @@
 
 Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
   * Uses the built-in function `messages-buffer' instead of direct name.
-  * Replaces the first line conditional with a check for `nil' format-string; to me, the first conditional did nothing and the new check will more likely to prevent empty time-stamps (when message's format is `nil')
+  * Replaces the first line conditional with a check for `nil' format-string.
+    The new check will be more likely to prevent empty time-stamps (when message's format is `nil').
   * Replaces the `if' statement to a `when' statement because there was no else clause to begin with.
   * Reduced the time-string to being just a call to the function `format-time-string'."
   (when format-string
@@ -121,13 +124,15 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   yasnippet
                                   java-snippets
                                   haskell-snippets
-                                  auto-complete
-                                  ,@(unless (eq system-type 'windows-nt)
-                                      ;; clang is not on windows setup
-                                      '(auto-complete-c-headers
-                                        auto-complete-clang-async))
-                                  ac-math
-                                  ac-js2
+
+                                  ;;;; we might want to be on company-mode now
+                                  ;; auto-complete
+                                  ;; ,@(unless (eq system-type 'windows-nt)
+                                  ;;     ;; clang is not on windows setup
+                                  ;;     '(auto-complete-c-headers
+                                  ;;       auto-complete-clang-async))
+                                  ;; ac-math
+                                  ;; ac-js2
 
                                   ;; graphic improvements
                                   zenburn-theme
@@ -138,7 +143,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   modern-cpp-font-lock
 
                                   ;; Emacs UI improvement
-                                  sr-speedbar
                                   popwin
                                   browse-kill-ring
                                   direx
