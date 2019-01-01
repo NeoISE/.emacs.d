@@ -3,41 +3,40 @@
 ;; Author/Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Jan. 2017 -- 22:27 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 20:33 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
 ;;
-;; I forgot where I found these.
+;; Rewriting of the original defadvice codes from unknown origins.
 ;;
-;; All modifications of the original code, my additions, are under the MIT
-;; license. Credits for the original code are given to the original author.
+;; Contains some advises that concern recentf calls.
 ;;
 ;;; Code:
 
 (require 'recentf)
+(require 'cl-lib)
 
-(defvar my-recentf-list-prev nil
+(defvar recentf-advice-previous-recentf-list nil
   "Stores the previous recent files list of the current session.")
 
-(defadvice recentf-save-list (around no-message activate)
-  "If `recentf-list' and previous recentf-list are equal, do nothing.
-Also, suppress output from going to the user."
-  (unless (equal recentf-list my-recentf-list-prev)
-    (cl-flet ((message (format-string &rest args)
-                       (eval `(format ,format-string ,@args)))
-              (write-file (file &optional confirm)
-                          (let ((str (buffer-string)))
-                            (with-temp-file file
-                              (insert str)))))
-             ad-do-it
-             (setq my-recentf-list-prev recentf-list))))
+(defun recentf-advice--suppress-list-writes (orig-fun &rest args)
+  "Suppresses excessive writes to disk of the recentf list.
 
-(defadvice recentf-cleanup (around no-message activate)
-  "Suppress the output from `message' to minibuffer"
-  (cl-flet ((message (format-string &rest args)
-                     (eval `(format ,format-string ,@args))))
-           ad-do-it))
+Works by comparing the list from the last change to the current list stored in `recentf-list'."
+  (if (equal recentf-list
+             recentf-advice-previous-recentf-list)
+      (message "%s" "recentf mode: stopped an unnecessary flush to file.")
+    (setq recentf-advice-previous-recentf-list recentf-list)
+    (apply orig-fun args)
+    (message "%s" "recentf mode: wrote recentf list to file.")))
+
+(defun recentf-advice--suppress-messages (orig-fun &rest args)
+  "Suppresses messages from `orig-fun', which can clog up message logs quickly, especially for `recentf-cleanup' if many files are removed from the list at once."
+  (cl-flet ((message (format-string &rest margs)
+                     nil))
+    (apply orig-fun args)))
+
 
 (provide 'recentf-advice)
 

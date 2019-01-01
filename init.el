@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 18:01 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 20:32 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -203,6 +203,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 ;; §2 §§1: Various Variables
 
 (require 'recentf)
+(require 'recentf-advice)
 (require 'csharp-mode)
 (require 'powershell)
 (require 'smart-tabs-mode)
@@ -373,14 +374,8 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
     t))
 (add-hook 'kill-buffer-query-functions 'prevent-scratch-buffer-kill)
 
-;; bug fix: issue in EMACS below version 25.3, a fix is available below
-(when (version< emacs-version "25.3")
-  (eval-after-load "enriched"
-    '(defun enriched-decode-display-prop (start end &optional param)
-       (list start end))))
-
 ;; use js2-mode instead of js-mode for javascript files
-(push '("\\.js\\'" . js2-mode) auto-mode-alist)
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; but give js-mode a better linting capacity
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (setq js2-highlight-level 3)
@@ -435,6 +430,8 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
                 powershell-mode-hook
 
+                python-mode-hook
+
                 nxml-mode-hook
                 html-mode-hook
                 ))
@@ -487,8 +484,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
   ((lua-indent-line . lua-indent-level)))
 
 ;; activate smart-tab-mode
-(smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'python 'ruby
-                      'lua)
+(smart-tabs-insinuate 'c 'c++ 'csharp 'java 'javascript 'cperl 'ruby 'lua)
 
 ;; soft wrapping
 (dolist (hook '(text-mode-hook
@@ -551,20 +547,22 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 ;; sets the amount of files to show
 (setq recentf-max-menu-items 100)
 
-;; run cleanup during idle time, after 60 seconds
-(setq recentf-auto-cleanup 60)
+;; run cleanup during idle time, after 300 seconds
+(setq recentf-auto-cleanup 300)
 
-;; set up the advices for recentf
-(load "recentf-advice")
+;; set up the advices for recentf functions
+(advice-add 'recentf-save-list :around #'recentf-advice--suppress-list-writes)
+(advice-add 'recentf-cleanup :around #'recentf-advice--suppress-messages)
 
 ;; run recentf mode
 (recentf-mode t)
 
-;; run the saving list function every 30 seconds from the point of emacs idle
-(run-with-idle-timer 30 t 'recentf-save-list)
+;; run the saving list function after 120 seconds of emacs being idle
+;; maybe not needed, considering removal of the following lines
+;;(run-with-idle-timer 120 t 'recentf-save-list)
 
-;; run the saving list function every 25 minutes just in case though
-(run-at-time nil (* 25 60) 'recentf-save-list)
+;; run the saving list function every 20 minutes
+(run-at-time nil (* 20 60) 'recentf-save-list)
 
 
 
