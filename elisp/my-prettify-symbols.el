@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:51 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 23:14 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Code:
@@ -62,7 +62,7 @@
 ;;     (identity list-dest)))
 
 (defun my-prettify-symbols-default-config nil
-  (setq lisp--prettify-symbols-alist (append lisp--prettify-symbols-alist
+  (setq lisp-prettify-symbols-alist (append lisp-prettify-symbols-alist
                                              my-math-operator-prettify-alist
                                              my-arrows-prettify-alist))
 
