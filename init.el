@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 21:03 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 21:37 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -209,12 +209,11 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (require 'smart-tabs-mode)
 (require 'smex)
 (require 'ido-completing-read+)
-(require 'ace-popup-menu)
 (require 'popwin)
 (require 'yasnippet)
-(require 'auto-complete)
-(require 'auto-complete-config)
-(require 'ac-math)
+;; (require 'auto-complete)
+;; (require 'auto-complete-config)
+;; (require 'ac-math)
 (require 'ido-grid-mode)
 (require 'smart-mark)
 (require 'stickyfunc-enhance)
@@ -223,7 +222,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (require 'markdown-mode)
 (require 'js)
 (require 'js2-mode)
-(require 'ac-js2)
+;; (require 'ac-js2)
 (require 'haskell-mode)
 (require 'haskell-snippets)
 (require 'ruby-mode)
@@ -573,97 +572,97 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 ;; (add-hook 'prog-mode-hook 'yas-minor-mode)
 (yas-global-mode t)
 
-;;; auto-complete settings
-(add-to-list 'ac-modes 'latex-mode)
-(setq ac-auto-start 3
-      ac-use-fuzzy t
-      ac-show-menu-immediately-on-auto-complete t)
-(ac-linum-workaround)
-(ac-flyspell-workaround)
+;; ;;; auto-complete settings
+;; (add-to-list 'ac-modes 'latex-mode)
+;; (setq ac-auto-start 3
+;;       ac-use-fuzzy t
+;;       ac-show-menu-immediately-on-auto-complete t)
+;; (ac-linum-workaround)
+;; (ac-flyspell-workaround)
 
-;; ac-sources is complicated:
-;;  default => "in-buffer", "other same buffers"
-;;   prog-mode => "yasnippet", default
-;;    c/c++ => "clang-async", "semantic", "c-headers", prog-mode
-;;    css => "css-property", prog-mode
-;;    js => "semantic", prog-mode
-;;    js2 => "ac-js2", prog-mode
-;;    emacs-lisp => "symbols", "variables", "functions", "features", prog-mode
-;;   LaTeX-mode => "math-latex", "latex-commands", default
-(defvar my-default-sources '(ac-source-words-in-buffer
-                             ac-source-words-in-same-mode-buffers))
-(defvar my-prog-mode-sources (append '(ac-source-yasnippet)
-                                     my-default-sources))
-(defvar my-c-c++-mode-sources '(ac-source-semantic
-                                ac-source-semantic-raw))
-(defvar my-css-mode-sources (append '(ac-source-css-property)
-                                    my-prog-mode-sources))
-(defvar my-js-mode-sources (append '(ac-source-semantic ac-source-semantic-raw)
-                                   my-prog-mode-sources))
-(defvar my-emacs-lisp-mode-sources (append '(ac-source-symbols
-                                             ac-source-variables
-                                             ac-source-functions
-                                             ac-source-features)
-                                           my-prog-mode-sources))
-(defvar my-LaTeX-mode-sources (append '(; ac-source-math-unicode
-                                        ac-source-math-latex
-                                        ac-source-latex-commands)
-                                      my-default-sources))
+;; ;; ac-sources is complicated:
+;; ;;  default => "in-buffer", "other same buffers"
+;; ;;   prog-mode => "yasnippet", default
+;; ;;    c/c++ => "clang-async", "semantic", "c-headers", prog-mode
+;; ;;    css => "css-property", prog-mode
+;; ;;    js => "semantic", prog-mode
+;; ;;    js2 => "ac-js2", prog-mode
+;; ;;    emacs-lisp => "symbols", "variables", "functions", "features", prog-mode
+;; ;;   LaTeX-mode => "math-latex", "latex-commands", default
+;; (defvar my-default-sources '(ac-source-words-in-buffer
+;;                              ac-source-words-in-same-mode-buffers))
+;; (defvar my-prog-mode-sources (append '(ac-source-yasnippet)
+;;                                      my-default-sources))
+;; (defvar my-c-c++-mode-sources '(ac-source-semantic
+;;                                 ac-source-semantic-raw))
+;; (defvar my-css-mode-sources (append '(ac-source-css-property)
+;;                                     my-prog-mode-sources))
+;; (defvar my-js-mode-sources (append '(ac-source-semantic ac-source-semantic-raw)
+;;                                    my-prog-mode-sources))
+;; (defvar my-emacs-lisp-mode-sources (append '(ac-source-symbols
+;;                                              ac-source-variables
+;;                                              ac-source-functions
+;;                                              ac-source-features)
+;;                                            my-prog-mode-sources))
+;; (defvar my-LaTeX-mode-sources (append '(; ac-source-math-unicode
+;;                                         ac-source-math-latex
+;;                                         ac-source-latex-commands)
+;;                                       my-default-sources))
 
-(setq-default ac-sources my-default-sources)
+;; (setq-default ac-sources my-default-sources)
 
-(add-hook 'text-mode-hook (lambda nil
-                            (setq ac-sources my-default-sources)))
+;; (add-hook 'text-mode-hook (lambda nil
+;;                             (setq ac-sources my-default-sources)))
 
-(add-hook 'prog-mode-hook (lambda nil
-                            (setq ac-sources my-prog-mode-sources)))
+;; (add-hook 'prog-mode-hook (lambda nil
+;;                             (setq ac-sources my-prog-mode-sources)))
 
-;; additional sources for c and c++, no clang on windows
-(if (eq system-type 'windows-nt)
-    (progn
-      (dolist (hook '(c-mode-hook
-                      c++-mode-hook))
-        (add-hook hook
-                  (lambda nil
-                    (setq ac-sources (append my-c-c++-mode-sources
-                                             my-prog-mode-sources))))))
-  (progn
-    (require 'auto-complete-clang-async)
-    (require 'auto-complete-c-headers)
+;; ;; additional sources for c and c++, no clang on windows
+;; (if (eq system-type 'windows-nt)
+;;     (progn
+;;       (dolist (hook '(c-mode-hook
+;;                       c++-mode-hook))
+;;         (add-hook hook
+;;                   (lambda nil
+;;                     (setq ac-sources (append my-c-c++-mode-sources
+;;                                              my-prog-mode-sources))))))
+;;   (progn
+;;     (require 'auto-complete-clang-async)
+;;     (require 'auto-complete-c-headers)
 
-    (setq my-c-c++-mode-sources (append '(ac-source-clang-async)
-                                        my-c-c++-mode-sources))
-    (add-to-list 'my-c-c++-mode-sources '(ac-source-c-headers) t)
+;;     (setq my-c-c++-mode-sources (append '(ac-source-clang-async)
+;;                                         my-c-c++-mode-sources))
+;;     (add-to-list 'my-c-c++-mode-sources '(ac-source-c-headers) t)
 
-    (defun my-auto-completion-c-mode-hook nil
-      "Custom sources for C and C++"
-      (setq ac-sources (append my-c-c++-mode-sources
-                               my-prog-mode-sources))
-      (ac-clang-launch-completion-process))
-    (add-hook 'c-mode-hook 'my-auto-completion-c-mode-hook)
-    (add-hook 'c++-mode-hook 'my-auto-completion-c-mode-hook)
+;;     (defun my-auto-completion-c-mode-hook nil
+;;       "Custom sources for C and C++"
+;;       (setq ac-sources (append my-c-c++-mode-sources
+;;                                my-prog-mode-sources))
+;;       (ac-clang-launch-completion-process))
+;;     (add-hook 'c-mode-hook 'my-auto-completion-c-mode-hook)
+;;     (add-hook 'c++-mode-hook 'my-auto-completion-c-mode-hook)
 
-    ;; set the includes directory for ac-source-c-headers
-    (setq achead:include-directories
-          (append achead:include-directories '("/usr/include/c++/6.2.1")))))
+;;     ;; set the includes directory for ac-source-c-headers
+;;     (setq achead:include-directories
+;;           (append achead:include-directories '("/usr/include/c++/6.2.1")))))
 
-;; additional sources for elisp
-(add-hook 'emacs-lisp-mode-hook
-          (lambda nil
-            (setq ac-sources my-emacs-lisp-mode-sources)))
+;; ;; additional sources for elisp
+;; (add-hook 'emacs-lisp-mode-hook
+;;           (lambda nil
+;;             (setq ac-sources my-emacs-lisp-mode-sources)))
 
-;; sources for LaTeX
-(add-hook 'latex-mode-hook (lambda nil (setq ac-sources my-LaTeX-mode-sources)))
+;; ;; sources for LaTeX
+;; (add-hook 'latex-mode-hook (lambda nil (setq ac-sources my-LaTeX-mode-sources)))
 
-;; sources for (basic) javascript-mode
-(add-hook 'js-mode-hook (lambda nil (setq ac-sources my-js-mode-sources)))
+;; ;; sources for (basic) javascript-mode
+;; (add-hook 'js-mode-hook (lambda nil (setq ac-sources my-js-mode-sources)))
 
-;; add better auto-complete to js2
-;; see a fix of a error: https://is.gd/VoYlyy
-(add-hook 'js2-mode-hook 'ac-js2-mode)
+;; ;; add better auto-complete to js2
+;; ;; see a fix of a error: https://is.gd/VoYlyy
+;; (add-hook 'js2-mode-hook 'ac-js2-mode)
 
-;; start auto-complete
-(global-auto-complete-mode t)
+;; ;; start auto-complete
+;; (global-auto-complete-mode t)
 
 
 
@@ -753,7 +752,6 @@ The function returns nil for places that the spell checker should `not' check; o
 
 (require 'windmove)
 (require 'visual-regexp)
-(require 'mouse-select-linum)
 (require 'xah-copy)
 (require 'xah-cut)
 
@@ -774,11 +772,6 @@ The function returns nil for places that the spell checker should `not' check; o
 (global-set-key (kbd "C-c s") 'windmove-down)
 (global-set-key (kbd "C-c a") 'windmove-left)
 (global-set-key (kbd "C-c d") 'windmove-right)
-
-;; mouse-select line
-(global-set-key (kbd "<left-margin> <down-mouse-1>") 'mouse-down-select-linum)
-(global-set-key (kbd "<left-margin> <mouse-1>") 'mouse-up-select-linum)
-(global-set-key (kbd "<left-margin> <drag-mouse-1>") 'mouse-up-select-linum)
 
 ;; powershell
 (define-key powershell-mode-map "\t" 'powershell-indent-line-or-region)
