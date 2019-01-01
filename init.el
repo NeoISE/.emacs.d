@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:53 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 23:09 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -535,8 +535,8 @@ Can be cancelled in an active mode with the universal prefix, C-u."
                           (file-name-nondirectory smex-save-file))
                         ,(regexp-quote
                           (file-name-nondirectory recentf-save-file))
-                        ,(regexp-quote
-                          (file-name-nondirectory ac-comphist-file))
+                        ;; ,(regexp-quote
+                        ;;   (file-name-nondirectory ac-comphist-file))
                         ,(regexp-quote
                           (file-name-nondirectory user-sensitive-file))
                         ,(regexp-quote
