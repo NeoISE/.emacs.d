@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 21:37 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 21:40 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -807,12 +807,12 @@ The function returns nil for places that the spell checker should `not' check; o
 (define-key yas-minor-mode-map (kbd "TAB") nil)
 (define-key yas-minor-mode-map (kbd "C-<tab>") 'yas-expand)
 
-;; auto-complete
-(define-key ac-completing-map (kbd "<tab>") 'ac-complete)
-(define-key ac-completing-map (kbd "TAB") 'ac-complete)
-(define-key ac-completing-map (kbd "S-<tab>") 'ac-expand-previous)
-(define-key ac-completing-map (kbd "S-TAB") 'ac-expand-previous)
-(define-key ac-completing-map "\r" nil)
+;; ;; auto-complete
+;; (define-key ac-completing-map (kbd "<tab>") 'ac-complete)
+;; (define-key ac-completing-map (kbd "TAB") 'ac-complete)
+;; (define-key ac-completing-map (kbd "S-<tab>") 'ac-expand-previous)
+;; (define-key ac-completing-map (kbd "S-TAB") 'ac-expand-previous)
+;; (define-key ac-completing-map "\r" nil)
 
 ;; cut, copy, kill-line
 (global-set-key (kbd "C-w") 'xah-cut-line-or-region)
