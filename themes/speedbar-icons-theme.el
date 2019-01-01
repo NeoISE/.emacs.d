@@ -1,9 +1,9 @@
-;;; speedbar-icons-theme.el -- Changes the icons on the speedbar.
+;;; speedbar-icons-theme.el -- Changes the icons on the speedbar -*- lexical-binding: t; -*-
 ;;
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:37 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:50 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -123,7 +123,6 @@ The large icons are 32x32, while small icons are 24x24 pixels."
 (provide 'speedbar-icons-theme)
 
 ;; Local Variables:
-;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)

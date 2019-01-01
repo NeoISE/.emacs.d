@@ -1,9 +1,9 @@
-;;; init.el -- My init file for Emacs.
+;;; init.el -- My init file for Emacs -*- lexical-binding: t; -*-
 ;;
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:35 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:53 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -1119,7 +1119,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 
 
 ;; Local Variables:
-;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)

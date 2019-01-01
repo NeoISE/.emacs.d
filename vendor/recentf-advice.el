@@ -1,9 +1,9 @@
-;;; recentf-advice.el -- Several advice for recentf functions.
+;;; recentf-advice.el -- Several advice for recentf functions -*- lexical-binding: t; -*-
 ;;
 ;; Author/Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:35 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:49 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -41,7 +41,6 @@ Works by comparing the list from the last change to the current list stored in `
 (provide 'recentf-advice)
 
 ;; Local Variables:
-;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)

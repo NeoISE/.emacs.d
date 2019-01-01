@@ -1,9 +1,9 @@
-;;; my-solarized-light.el -- Changes to the solarized-light theme.
+;;; my-solarized-light.el -- Changes to the solarized-light theme -*- lexical-binding: t; -*-
 ;;
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:36 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:51 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -38,7 +38,6 @@
 (provide 'my-solarized-light)
 
 ;; Local Variables:
-;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)
