@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Jan. 2017 -- 22:26 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:36 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -23,11 +23,6 @@
     ;; linum-mode
     `(linum ((t (:background ,base03))))
 
-    ;; hl-linum
-    `(hl-linum ((t (:inherit linum
-                             :background ,(face-background 'hl-line nil t)
-                             :weight bold))))
-
     ;; show-paren-mode
     `(show-paren-match ((t (:weight bold))))
     ;; no matter what, an error is red highlight with white text
@@ -43,6 +38,7 @@
 (provide 'my-solarized-light)
 
 ;; Local Variables:
+;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)

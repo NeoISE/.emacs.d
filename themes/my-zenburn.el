@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <14 Jan. 2017 -- 22:26 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:37 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -33,11 +33,6 @@
                                 :foreground ,zenburn-fg
                                 :weight bold))))
 
-     ;; hl-linum
-     `(hl-linum ((t (:inherit linum
-                              :background ,(face-background 'hl-line nil t)
-                              :weight bold))))
-
      ;; paren-mode
      `(show-paren-match ((t (:foreground ,zenburn-fg
                                          :background ,zenburn-bg+3
@@ -55,6 +50,7 @@
 (provide 'my-zenburn)
 
 ;; Local Variables:
+;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)

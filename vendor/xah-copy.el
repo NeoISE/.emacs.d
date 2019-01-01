@@ -6,7 +6,7 @@
 ;; Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <23 Sep. 2017 -- 18:13 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:38 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -72,6 +72,7 @@ Originally from URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html
 (provide 'xah-copy)
 
 ;; Local Variables:
+;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)

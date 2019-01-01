@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <21 Feb. 2018 -- 21:15 (SE Asia Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:37 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -326,6 +326,7 @@ Could indicate that the location set through variables do not reflect current lo
 (provide 'sundial)
 
 ;; Local Variables:
+;; lexical-binding: t
 ;; indent-tabs-mode: nil
 ;; time-stamp-pattern: "16/Last Updated:[ \t]+\\\\?[\"<]+%02d %3b. %:y -- %02H:%02M (%Z) by %U\\\\?[\">]"
 ;; eval: (add-hook 'before-save-hook 'time-stamp nil t)
