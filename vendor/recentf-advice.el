@@ -3,7 +3,7 @@
 ;; Author/Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 20:33 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 21:06 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -18,7 +18,7 @@
 (require 'cl-lib)
 
 (defvar recentf-advice-previous-recentf-list nil
-  "Stores the previous recent files list of the current session.")
+  "Stores the recent files list from the last modification of the current session.")
 
 (defun recentf-advice--suppress-list-writes (orig-fun &rest args)
   "Suppresses excessive writes to disk of the recentf list.

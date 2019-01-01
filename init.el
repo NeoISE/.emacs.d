@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 20:32 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 21:03 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -754,7 +754,6 @@ The function returns nil for places that the spell checker should `not' check; o
 (require 'windmove)
 (require 'visual-regexp)
 (require 'mouse-select-linum)
-(require 'recentf-ido)
 (require 'xah-copy)
 (require 'xah-cut)
 
@@ -800,14 +799,15 @@ The function returns nil for places that the spell checker should `not' check; o
 
 ;; recentf
 (global-set-key (kbd "C-c C-r") 'recentf-open-files)
-(global-set-key (kbd "C-c M-r") 'recentf-ido-find-file)
 
 ;; smex
 (global-set-key (kbd "M-x") 'smex)
 (global-set-key (kbd "<menu>") 'smex)
+(global-set-key (kbd "<apps>") 'smex)
 (global-set-key (kbd "M-S-x") 'smex-major-mode-commands)
 (global-set-key (kbd "C-c M-x") 'execute-extended-command)
 (global-set-key (kbd "C-c <menu>") 'execute-extended-command)
+(global-set-key (kbd "C-c <apps>") 'execute-extended-command)
 
 ;; yasnippet
 (define-key yas-minor-mode-map (kbd "<tab>") nil)
