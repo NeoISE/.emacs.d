@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 21:40 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 22:12 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -137,7 +137,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   solarized-theme
                                   smart-mode-line
                                   smart-mode-line-powerline-theme
-                                  rainbow-mode
                                   modern-cpp-font-lock
 
                                   ;; Emacs UI improvement
@@ -759,8 +758,6 @@ The function returns nil for places that the spell checker should `not' check; o
 (global-set-key (kbd "<f7>") 'ranger)
 (global-set-key (kbd "<f9>") 'split-window-below)
 (global-set-key (kbd "<f10>") 'split-window-right) ; no need for menu-bar-open
-(global-set-key (kbd "<f11>") 'find-file)
-(global-set-key (kbd "<f12>") 'ansi-term)
 
 ;; paradox
 ;; easy to remember to apply paradox before action (p before ...)
@@ -817,10 +814,10 @@ The function returns nil for places that the spell checker should `not' check; o
 ;; cut, copy, kill-line
 (global-set-key (kbd "C-w") 'xah-cut-line-or-region)
 (global-set-key (kbd "M-w") 'xah-copy-line-or-region)
-(global-set-key (kbd "C-k") 'kill-whole-line) ; not kill to the right
+(global-set-key (kbd "C-k") 'kill-whole-line)
 
 ;; browse-kill-ring
-(global-set-key (kbd "M-y") 'browse-kill-ring) ; not yank-pop
+(global-set-key (kbd "M-y") 'browse-kill-ring)
 
 
 
@@ -829,13 +826,9 @@ The function returns nil for places that the spell checker should `not' check; o
 ;;;; Graphics configuration
 (require 'modern-cpp-font-lock)
 (require 'hl-line)
-(require 'hl-linum)
 
 ;; disable tool-bar
 (tool-bar-mode -1)
-
-;; allows highlighting the current line number and padded dynamic formatting
-(hl-linum/enable)
 
 (when (eq system-type 'windows-nt)
   ;; scroll-bars on windows looks bad
@@ -972,8 +965,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (require 'smart-mode-line-powerline-theme)
   (require 'smart-mode-line-light-powerline-theme)
   (require 'highlight-thing)
-  (require 'rainbow-mode)
-  (require 'sr-speedbar)
   (require 'shift-cursor)
   (require 'speedbar-icons-theme)
   (require 'my-prettify-symbols)
@@ -1012,45 +1003,21 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   ;; highlight the current line for easier preview
   (global-hl-line-mode)
 
-  ;; have colorful text
-  (add-hook 'prog-mode-hook 'rainbow-mode)
-
   ;; do some margin fiddling with visual-fill-column
   (global-visual-fill-column-mode)
   (setq-default visual-fill-column-fringes-outside-margins nil)
-  (defun linum-update--compensate-left-margin (&rest r)
-    "When the left margin changes due to line additions or removal, the right margin does not shrink or grow (respectively).
-Thus, this advice is created to get the margins spaced correctly."
-    (when visual-fill-column-mode
-      (unless (equal visual-fill-column-width
-                     (+ fill-column
-                        hl-linum/margin-space))
-        (setq visual-fill-column-width (+ fill-column
-                                          hl-linum/margin-space))
-        (visual-fill-column--set-margins)
-
-        ;; `visual-fill-column--set-margins' cancels linum; fix left margin
-        (let ((curr-right-margins (cdr (window-margins)))
-              (window (get-buffer-window (current-buffer))))
-          (if curr-right-margins
-              (set-window-margins window hl-linum/margin-space curr-right-margins)
-            (set-window-margins window hl-linum/margin-space)))
-        )
-      ))
-  (advice-add 'linum-update :after #'linum-update--compensate-left-margin)
 
   ;; markdown header scaling
   (setq markdown-header-scaling t
-        markdown-header-scaling-values '(1.8 1.4 1.2 1.1 1.0 0.9))
+        markdown-header-scaling-values '(1.4 1.2 1.15 1.1 1.0 0.9))
 
   ;; solarized theme variables
   (setq solarized-distinct-fringe-background t
         solarized-height-minus-1 0.9
         solarized-height-plus-1 1.1
-        solarized-height-plus-2 1.2
-        solarized-height-plus-3 1.4
-        solarized-height-plus-4 1.8
-        )
+        solarized-height-plus-2 1.15
+        solarized-height-plus-3 1.2
+        solarized-height-plus-4 1.4)
 
   ;; changes the theme from light to dark with time
   (load-theme 'solarized-light nil t)
@@ -1106,19 +1073,9 @@ Thus, this advice is created to get the margins spaced correctly."
   (setq prettify-symbols-unprettify-at-point 'right-edge)
   (my-prettify-symbols-default-config)
 
-  ;; sr-speedbar
   (setq speedbar-show-unknown-files t)
-  (setq sr-speedbar-skip-other-window-p t
-        sr-speedbar-right-side nil)
   (add-hook 'speedbar-mode-hook (lambda nil
-                                  (linum-mode -1)))
-  ;; (sr-speedbar-open)
-  ;; (with-current-buffer sr-speedbar-buffer-name
-  ;;   (setq window-size-fixed 'width))
-
-  ;; ;; after affecting the speedbar buffer, we move back to the scratch buffer
-  ;; (switch-to-buffer "*scratch*")
-  )
+                                  (linum-mode -1))))
 
 ;; execute the graphical section under different circumstance
 ;; since daemon and terminal session are somewhat related, the use of daemonp is
@@ -1133,9 +1090,9 @@ Thus, this advice is created to get the margins spaced correctly."
               ;; else
               (add-to-list frm-alist '(font . "Consolas-10"))
               ;; For math symbols
-              (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono") ; Math symb
-              (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono") ; arrows
-              )
+              (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono")
+              ;; arrows
+              (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono"))
           (if (member "Hack" (font-family-list))
               (add-to-list frm-alist '(font . "Hack-10"))
             (add-to-list frm-alist '(font . "DejaVu Sans Mono-10")))))
@@ -1150,9 +1107,9 @@ Thus, this advice is created to get the margins spaced correctly."
           ;; else
           (set-frame-font "Consolas-10" t t)
           ;; For math symbols
-          (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono") ; Math symb
-          (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono") ; arrows
-          )
+          (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono")
+          ;; arrows
+          (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono"))
       (if (member "Hack" (font-family-list))
           (set-frame-font "Hack-10" t t)
         (set-frame-font "DejaVu Sans Mono-10" t t)))
