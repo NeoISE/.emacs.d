@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <24 Sep. 2018 -- 22:45 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <31 Dec. 2018 -- 18:01 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -100,9 +100,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 ;; Packages that I want to move with me when I move to a clean system.
 ;; The variable will be changed again by the current emacs when the load-file
 ;; for the custom-file occurs to match the actual packages for the system.
-(setq package-selected-packages `(
-                                  ;; major modes for editing files
-                                  csharp-mode
+(setq package-selected-packages `(csharp-mode
                                   markdown-mode
                                   powershell
                                   js2-mode
@@ -145,9 +143,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   ;; Emacs UI improvement
                                   popwin
                                   browse-kill-ring
-                                  direx
                                   ido-grid-mode
-                                  ace-popup-menu
                                   ido-completing-read+
                                   smex
                                   ranger
@@ -155,7 +151,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   ;; Package manager
                                   async
                                   paradox))
-(package-install-selected-packages)     ; install if not installed
+(package-install-selected-packages)
 
 ;; leaves the loading after the installation of needed files
 (load custom-file)
@@ -214,7 +210,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (require 'ido-completing-read+)
 (require 'ace-popup-menu)
 (require 'popwin)
-(require 'direx)
 (require 'yasnippet)
 (require 'auto-complete)
 (require 'auto-complete-config)
@@ -225,7 +220,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (require 'origami)
 (require 'browse-kill-ring)
 (require 'markdown-mode)
-(require 'js)                           ; js-mode
+(require 'js)
 (require 'js2-mode)
 (require 'ac-js2)
 (require 'haskell-mode)
@@ -286,7 +281,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (setq-default cursor-in-non-selected-windows nil)
 
 ;; line numbering
-(global-linum-mode t)
+(global-display-line-numbers-mode)
 
 ;; force newer files
 (setq load-prefer-newer t)
@@ -298,9 +293,8 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (setq require-final-newline "visit-save")
 
 ;; setup markdown mode
-(push '("\\.markdown\\'" . markdown-mode) auto-mode-alist)
-(push '("\\.md\\'" . markdown-mode) auto-mode-alist)
-(push '("README\\.md\\'" . gfm-mode) auto-mode-alist)
+(add-to-list 'auto-mode-alist '("\\.m\\(arkdown\\|d\\)\\'" . markdown-mode))
+(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 
 ;; single space ends a sentence
 (setq sentence-end-double-space nil)
@@ -342,9 +336,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 ;; turn on grid look for ido-mode
 (ido-grid-mode t)
 
-;; activates ace-popup-menu
-(ace-popup-menu-mode t)
-
 ;; highlight brackets
 (show-paren-mode t)
 (setq show-paren-style 'mixed)
@@ -356,11 +347,8 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (global-subword-mode t)
 
 ;; activates popwin-mode
+;; prevents permanent windows from opening for *Help*, etc.
 (popwin-mode t)
-
-;; make a direx window to the left
-(push '(direx:direx-mode :position left :width 25 :stick t :dedicated t)
-      popwin:special-display-config)
 
 ;; delete selected content when highlighted
 (delete-selection-mode t)
@@ -768,13 +756,12 @@ The function returns nil for places that the spell checker should `not' check; o
 (require 'windmove)
 (require 'visual-regexp)
 (require 'mouse-select-linum)
-(require  'recentf-ido)
+(require 'recentf-ido)
 (require 'xah-copy)
 (require 'xah-cut)
 
 ;; most used keys
 (global-set-key (kbd "<f7>") 'ranger)
-(global-set-key (kbd "<f8>") 'direx:jump-to-directory-other-window)
 (global-set-key (kbd "<f9>") 'split-window-below)
 (global-set-key (kbd "<f10>") 'split-window-right) ; no need for menu-bar-open
 (global-set-key (kbd "<f11>") 'find-file)
