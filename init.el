@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <05 Jan. 2019 -- 02:38 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <05 Jan. 2019 -- 03:27 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -95,6 +95,22 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
   (copy-file (expand-file-name "sensitive.el" config-template-directory) user-sensitive-file)
   (message "%s" "Set up paradox integration asap")
   (message "%s" "Set up location asap"))
+
+(defun advice--suppress-messages (orig-fun &rest args)
+  "Suppresses messages from `orig-fun' (stopping message from going to echo area and from getting logged in the message buffer), which can clog up message logs quickly."
+  (let (message-log-max
+        (inhibit-message t))
+    (apply orig-fun args)))
+
+(defun advice--suppress-messages-logging (orig-fun &rest args)
+  "Suppresses messages from `orig-fun' from getting logged in the message buffer."
+  (let (message-log-max)
+    (apply orig-fun args)))
+
+(defun current-buffer-major-mode nil
+  "Returns the current buffers major mode."
+  (with-current-buffer (current-buffer)
+    major-mode))
 
 
 
@@ -309,6 +325,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 ;; improves ido
 (setq ido-enable-prefix nil
       ido-enable-regexp t               ; more powerful
+      ido-case-fold t
       ido-enable-dot-prefix nil
       ido-enable-flex-matching t
       ido-enable-tramp-completion t
@@ -362,25 +379,11 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 ;; going back to old anchor position
 (smart-mark-mode)
 
-;; disallow killing of scratch
-(defun prevent-scratch-buffer-kill nil
-  (if (equal (buffer-name (current-buffer)) "*scratch*")
-      (progn
-        (delete-region (point-min) (point-max))
-        nil)
-    t))
-(add-hook 'kill-buffer-query-functions 'prevent-scratch-buffer-kill)
-
 ;; use js2-mode instead of js-mode for javascript files
 (add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
 ;; but give js-mode a better linting capacity
 (add-hook 'js-mode-hook 'js2-minor-mode)
 (setq js2-highlight-level 3)
-
-(defun current-buffer-major-mode nil
-  "Returns the current buffers major mode."
-  (with-current-buffer (current-buffer)
-    major-mode))
 
 ;; functions should be with its comment-docs
 (setq narrow-to-defun-include-comments t)
@@ -397,6 +400,15 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
 ;; §2 §§2: Tabs, Alignment, etc.
 
+(defun advice--force-use-spaces-only (orig-fun &rest args)
+  "Forces functions that have this advice to be using only spaces without hard tabs."
+  (let ((indent-tabs-mode nil))
+    (apply orig-fun args)))
+
+(defun hook--force-use-spaces-only nil
+  "Forces the buffer to not use TABS to indent. Used as a hook to a mode."
+  (setq indent-tabs-mode nil))
+
 (setq-default fill-column 80
               tab-width 4
               ;; The following is not necessary. As far as I know, since version
@@ -406,19 +418,11 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
               tab-stop-list nil         ; to enforce the above statement
               indent-tabs-mode t)
 
-(defun advice--force-use-spaces-only (orig-fun &rest args)
-  "Forces functions that have this advice active to be using only spaces without hard tabs."
-  (let ((indent-tabs-mode nil))
-    (apply orig-fun args)))
-
 ;; prevent align* from inserting hard tabs that create alignment issues with
 ;; mismatching tab sizes on different systems
 (dolist (command '(align
                    align-regexp))
   (advice-add command :around #'advice--force-use-spaces-only))
-
-(defun hook--force-use-spaces-only ()
-  (setq indent-tabs-mode nil))
 
 ;; no literal tabs for modes
 (dolist (hook '(emacs-lisp-mode-hook
@@ -488,18 +492,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                 prog-mode-hook))
   (add-hook hook 'visual-line-mode))
 
-;; auto-indent pasted code in prog-modes
-(defun yank--indent-yanked-region (&rest r)
-  "Auto indent the pasted content, for `prog-mode'.
-Can be cancelled in an active mode with the universal prefix, C-u."
-  (and (not current-prefix-arg)
-       (derived-mode-p 'prog-mode)
-       (let ((mark-even-if-inactive transient-mark-mode))
-         (indent-region (region-beginning) (region-end) nil))))
-(dolist (command '(yank
-                   yank-pop))
-  (advice-add command :after #'yank--indent-yanked-region))
-
 
 
 ;; §2 §§3: Backups and Recent-Files
@@ -549,9 +541,9 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 
 ;; set up the advices for recentf functions
 (advice-add 'recentf-save-list :around #'recentf-advice--suppress-list-writes)
-(advice-add 'recentf-cleanup :around #'recentf-advice--suppress-messages)
+(advice-add 'recentf-cleanup :around #'advice--suppress-messages)
 ;; comment the following if one wants the echo message for preventing unnecessary recentf-list saves
-(advice-add 'recentf-save-list :around #'recentf-advice--suppress-messages)
+(advice-add 'recentf-save-list :around #'advice--suppress-messages)
 
 ;; run recentf mode
 (recentf-mode t)
