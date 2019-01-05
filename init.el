@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <02 Jan. 2019 -- 16:48 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <05 Jan. 2019 -- 01:28 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -47,8 +47,7 @@
 
 (when (version< emacs-version emacs-version-minimum)
   (error "The minimum emacs version that will work with this config is \"%s\";
-Your current emacs version is \"%s\".
-."
+Your current emacs version is \"%s\"."
          emacs-version-minimum emacs-version))
 
 
@@ -137,10 +136,11 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   ;; ac-js2
 
                                   ;; graphic improvements
-                                  zenburn-theme
-                                  solarized-theme
+                                  ;; zenburn-theme
+                                  ;; solarized-theme
+                                  apropospriate-theme
                                   smart-mode-line
-                                  smart-mode-line-powerline-theme
+                                  ;; smart-mode-line-powerline-theme
                                   modern-cpp-font-lock
 
                                   ;; Emacs UI improvement
@@ -555,6 +555,8 @@ Can be cancelled in an active mode with the universal prefix, C-u."
 ;; set up the advices for recentf functions
 (advice-add 'recentf-save-list :around #'recentf-advice--suppress-list-writes)
 (advice-add 'recentf-cleanup :around #'recentf-advice--suppress-messages)
+;; comment the following if one wants the echo message for preventing unnecessary recentf-list saves
+(advice-add 'recentf-save-list :around #'recentf-advice--suppress-messages)
 
 ;; run recentf mode
 (recentf-mode t)
@@ -962,12 +964,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 (defun my-color-and-graphics-setup nil
   ;; requires
   (require 'visual-fill-column)
-  (require 'solarized-light-theme)
-  (require 'my-solarized-light)
-  (require 'my-zenburn)
   (require 'smart-mode-line)
-  (require 'smart-mode-line-powerline-theme)
-  (require 'smart-mode-line-light-powerline-theme)
   (require 'highlight-thing)
   (require 'shift-cursor)
   (require 'speedbar-icons-theme)
@@ -1015,45 +1012,28 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (setq markdown-header-scaling t
         markdown-header-scaling-values '(1.4 1.2 1.15 1.1 1.0 0.9))
 
-  ;; solarized theme variables
-  (setq solarized-distinct-fringe-background t
-        solarized-height-minus-1 0.9
-        solarized-height-plus-1 1.1
-        solarized-height-plus-2 1.15
-        solarized-height-plus-3 1.2
-        solarized-height-plus-4 1.4)
+  ;; load the themes for quicker access
+  (load-theme 'apropospriate-light nil t)
+  (load-theme 'apropospriate-dark nil t)
+  (load-theme 'smart-mode-line-respectful nil t)
 
-  ;; changes the theme from light to dark with time
-  (load-theme 'solarized-light nil t)
-  (load-theme 'zenburn nil t)
+  ;; turn on sml
+  (setq sml/theme 'respectful)
+  (sml/setup)
 
   (defun my-daytime-config ()
-    ;; turn off previous sml themes
-    (disable-theme 'smart-mode-line-light-powerline)
-    (disable-theme 'smart-mode-line-powerline)
     ;; turn off night theme and on day theme
-    (disable-theme 'zenburn)
-    (enable-theme 'solarized-light)
-    ;; turn on sml
-    (setq sml/theme 'light-powerline)
-    (sml/setup)
+    (disable-theme 'apropospriate-dark)
+    (enable-theme 'apropospriate-light)
     ;; customize the theme
-    (my-solarized-light-config)
     (markdown-update-header-faces markdown-header-scaling
                                   markdown-header-scaling-values))
 
   (defun my-nighttime-config ()
-    ;; turn off previous sml themes
-    (disable-theme 'smart-mode-line-light-powerline)
-    (disable-theme 'smart-mode-line-powerline)
     ;; turn off day theme and on night theme
-    (disable-theme 'solarized-light)
-    (enable-theme 'zenburn)
-    ;; turn on sml
-    (setq sml/theme 'powerline)
-    (sml/setup)
+    (disable-theme 'apropospriate-light)
+    (enable-theme 'apropospriate-dark)
     ;; customize the theme
-    (my-zenburn-config)
     (markdown-update-header-faces markdown-header-scaling
                                   markdown-header-scaling-values))
 
