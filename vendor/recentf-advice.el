@@ -3,7 +3,7 @@
 ;; Author/Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <05 Jan. 2019 -- 01:26 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <05 Jan. 2019 -- 03:36 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -30,12 +30,6 @@ Works by comparing the list from the last change to the current list stored in `
     (setq recentf-advice-previous-recentf-list recentf-list)
     (apply orig-fun args)
     (message "%s" "recentf mode: wrote recentf list to file.")))
-
-(defun recentf-advice--suppress-messages (orig-fun &rest args)
-  "Suppresses messages from `orig-fun', which can clog up message logs quickly, especially for `recentf-cleanup' if many files are removed from the list at once."
-  (let (message-log-max
-        (inhibit-message t))
-    (apply orig-fun args)))
 
 
 (provide 'recentf-advice)
