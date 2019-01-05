@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <05 Jan. 2019 -- 01:28 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <05 Jan. 2019 -- 02:38 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -77,6 +77,25 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
 (advice-add 'message :before 'advice--timestamp-message)
 
+;; the other config files
+(defvar config-template-directory
+  (file-name-as-directory (concat user-emacs-directory "templates"))
+  "The directory that contains template configurations.")
+
+(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(unless (file-exists-p custom-file)
+  ;; makes the file if it doesn't exist
+  (copy-file (expand-file-name "custom.el" config-template-directory) custom-file))
+
+(defvar user-sensitive-file
+  (expand-file-name "sensitive.el" user-emacs-directory)
+  "A file with user-sensitive data like name, email, etc.")
+(unless (file-exists-p user-sensitive-file)
+  ;; makes the file if it doesn't exist
+  (copy-file (expand-file-name "sensitive.el" config-template-directory) user-sensitive-file)
+  (message "%s" "Set up paradox integration asap")
+  (message "%s" "Set up location asap"))
+
 
 
 ;; §1: Package Management
@@ -92,12 +111,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (package-initialize)
 (when (not package-archive-contents)
   (package-refresh-contents))
-
-;; move annoying emacs-made configs to separate file, load later though
-(setq custom-file (expand-file-name "custom.el" user-emacs-directory))
-(unless (file-exists-p custom-file)
-  ;; makes the file if it doesn't exist
-  (write-region (concat ";; system-specific configs" "\n") nil custom-file t))
 
 ;; Tell emacs about my packages setup.
 ;; Packages that I want to move with me when I move to a clean system.
@@ -163,24 +176,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (require 'paradox)
 
 ;; load sensitive data, require for paradox token access
-(defvar user-sensitive-file
-  (expand-file-name "sensitive.el" user-emacs-directory)
-  "A file with user-sensitive data like name, email, etc.")
-(unless (file-exists-p user-sensitive-file)
-  ;; makes the file if it doesn't exist
-  (write-region
-   (concat ";; User sensitive data" "\n"
-           ";; Do not share openly (i.e. over the internet)" "\n\n"
-           ";; (require 'paradox)" "\n"
-           ";; (setq paradox-github-token \"<token>\")" "\n\n"
-           ";; (setq user-full-name \"first last\")" "\n"
-           ";; (setq user-mail-address \"your_name@mail.com\")" "\n\n"
-           ";; set up the location services" "\n"
-           ";; (setq calendar-location-name \"Home\"" "\n"
-           ";;       calendar-latitude 0.00" "\n"
-           ";;       calendar-longitude 0.00)" "\n\n")
-   nil user-sensitive-file t)
-  (message "Set up paradox integration asap"))
 (load user-sensitive-file)
 
 ;; set up paradox, the package manager of choice
@@ -761,7 +756,9 @@ The function returns nil for places that the spell checker should `not' check; o
 (require 'xah-cut)
 
 ;; most used keys
-(global-set-key (kbd "<f7>") 'ranger)
+(global-set-key (kbd "<f6>") 'isearch-forward-regexp)
+(global-set-key (kbd "<f7>") 'isearch-backward-regexp)
+(global-set-key (kbd "<f8>") 'ranger)
 (global-set-key (kbd "<f9>") 'split-window-below)
 (global-set-key (kbd "<f10>") 'split-window-right) ; no need for menu-bar-open
 
