@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <05 Jan. 2019 -- 03:27 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <06 Jan. 2019 -- 16:30 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -152,6 +152,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
                                   ;; tab-completions
                                   yasnippet
+                                  yasnippet-snippets
                                   java-snippets
                                   haskell-snippets
 
@@ -165,11 +166,8 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   ;; ac-js2
 
                                   ;; graphic improvements
-                                  ;; zenburn-theme
-                                  ;; solarized-theme
                                   apropospriate-theme
                                   smart-mode-line
-                                  ;; smart-mode-line-powerline-theme
                                   modern-cpp-font-lock
 
                                   ;; Emacs UI improvement
@@ -562,6 +560,13 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 ;; yasnippet mode settings
 ;; (yas-reload-all)
 ;; (add-hook 'prog-mode-hook 'yas-minor-mode)
+(setq yas-prompt-functions '(yas-ido-prompt
+                             yas-completing-prompt)
+      yas-indent-line 'auto
+      yas-also-auto-indent-first-line t
+      yas-also-indent-empty-lines nil
+      yas-snippet-revival t
+      yas-triggers-in-field t)
 (yas-global-mode t)
 
 ;; ;;; auto-complete settings
