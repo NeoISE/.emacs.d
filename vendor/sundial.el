@@ -3,7 +3,7 @@
 ;; Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:49 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <06 Jan. 2019 -- 01:56 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -237,6 +237,9 @@ The accuracy of the time of sunrise and sunset is wholly determined
 by the variable `solar-error' and calculating functions
 \(i.e. `solar-sunrise-sunset') defined in the file `solar.el'.")
 
+(defvar sundial-next-timer nil
+  "Local variable to store the timers that are created by `run-at-time' calls.")
+
 (defun sundial--decimal-to-print-time (time)
   "Takes the time in the format HH.ff* and returns in the form HH:MM (24-hour format).
 
@@ -271,6 +274,13 @@ format."
   "Returns t if and only if time T1 is before time T2."
   (= -1 (sundial--compare-time-strings t1 t2)))
 
+(defun sundial-stop ()
+  "Kills the future events tiggered by \\[sundial-start]."
+  (interactive)
+  (when (timerp sundial-next-timer)
+    (cancel-timer sundial-next-timer)
+    (cancel-function-timers #'sundial-start)))
+
 (defun sundial-start ()
   "Triggers the start of the sundial, thus, starting the ability to
 trigger events at sunrise and/or sunset."
@@ -300,12 +310,12 @@ Could indicate that the location set through variables do not reflect current lo
              (prog1
                  ;; Between 0AM and sunrise; still night
                  (run-hooks 'sundial-nighttime-hook)
-               (run-at-time sunrise-now nil #'sundial-start)))
+               (setq sundial-next-timer (run-at-time sunrise-now nil #'sundial-start))))
             ((sundial--time-less-p current-time sunset-now)
              (prog1
                  ;; Between sunrise and sunset; still day
                  (run-hooks 'sundial-daytime-hook)
-               (run-at-time sunset-now nil #'sundial-start)))
+               (setq sundial-next-timer (run-at-time sunset-now nil #'sundial-start))))
             (t
              (prog1
                  ;; Thus, before tomorrow's sunrise at today's nighttime
@@ -321,7 +331,8 @@ Could indicate that the location set through variables do not reflect current lo
                                                           (nth 1 tomorrow)
                                                           (nth 0 tomorrow)
                                                           (nth 2 tomorrow))))
-                 (run-at-time tomorrow-execute-time nil #'sundial-start))))))))
+                 (setq sundial-next-timer (run-at-time tomorrow-execute-time nil #'sundial-start)))))))))
+
 
 (provide 'sundial)
 
