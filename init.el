@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <06 Jan. 2019 -- 17:53 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <06 Jan. 2019 -- 19:50 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -702,13 +702,6 @@ The function returns nil for places that the spell checker should `not' check; o
 (define-key yas-minor-mode-map (kbd "TAB") nil)
 (define-key yas-minor-mode-map (kbd "C-<tab>") 'yas-expand)
 
-;; ;; auto-complete
-;; (define-key ac-completing-map (kbd "<tab>") 'ac-complete)
-;; (define-key ac-completing-map (kbd "TAB") 'ac-complete)
-;; (define-key ac-completing-map (kbd "S-<tab>") 'ac-expand-previous)
-;; (define-key ac-completing-map (kbd "S-TAB") 'ac-expand-previous)
-;; (define-key ac-completing-map "\r" nil)
-
 ;; cut, copy, kill-line
 (global-set-key (kbd "C-w") 'xah-cut-line-or-region)
 (global-set-key (kbd "M-w") 'xah-copy-line-or-region)
@@ -748,6 +741,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
        (cond ((eq sys 'windows-nt) 32)
              ((eq sys 'darwin) 22)
              (t 0)))))
+
 ;; this function only works under the assumption of graphical display
 (defun maximum-pixel-width (&optional display sys-type)
   "Returns the maximum possible width in pixels that can be visible for SYS-TYPE if non-nil, otherwise calculate based on the current SYSTEM-TYPE.
@@ -781,12 +775,10 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                                 (truncate (/ (- max-height prefer-height) 2)))
             (set-frame-size frm
                             (truncate prefer-width)
-                            (truncate prefer-height) t)
-            )
+                            (truncate prefer-height) t))
 
           ;; set up the colorings
-          (my-color-and-graphics-setup)
-          )
+          (my-color-and-graphics-setup))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
@@ -808,21 +800,16 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                (global-set-key (kbd "<f13>") 'execute-extended-command)
                (global-set-key (kbd "<f14> u") 'undo)
                (global-set-key (kbd "<f14> m a") 'mark-whole-buffer)
-               (global-set-key (kbd "<f14> m s") 'set-mark-command)
-               )
+               (global-set-key (kbd "<f14> m s") 'set-mark-command))
 
               ((or (eq available-color 'true-color)
                    (eq available-color 'direct-color))
                ;; a large available set of colors, good for themes
-               (my-color-and-graphics-setup)
-               )
+               (my-color-and-graphics-setup))
 
               (t
-               (message "No support the following color class: %s"
-                        available-color))
-              ))
-      ))
-  )
+               (message "No support for the following color class: %s"
+                        available-color)))))))
 
 (defun my-default-frame-setup (&optional frame)
   "This function sets up the frames that follow the initial frame."
@@ -836,8 +823,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  (max-height (maximum-pixel-height frm))
                  (prefer-height (* 0.64 max-height)))
             (set-frame-height frm (truncate prefer-height) nil t))
-          (set-frame-width frm (+ fill-column hl-linum/margin-space))
-          )
+          (set-frame-width frm (+ fill-column hl-linum/margin-space)))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
@@ -848,10 +834,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
               ((or (eq available-color 'true-color)
                    (eq available-color 'direct-color))
                ;; a large available set of colors, good for themes
-               )
-              ))
-      ))
-  )
+               ))))))
 
 (defun my-color-and-graphics-setup nil
   ;; requires
@@ -913,25 +896,32 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (setq sml/theme 'respectful)
   (sml/setup)
 
-  (defun my-daytime-config ()
-    ;; turn off night theme and on day theme
+  (defun sundial-daytime-config ()
+    "Turns off the dark theme and turn on the light theme and other configurations for daytime."
     (disable-theme 'apropospriate-dark)
-    (enable-theme 'apropospriate-light)
-    ;; customize the theme
-    (markdown-update-header-faces markdown-header-scaling
-                                  markdown-header-scaling-values))
+    (enable-theme 'apropospriate-light))
 
-  (defun my-nighttime-config ()
-    ;; turn off day theme and on night theme
+  (defun sundial-nighttime-config ()
+    "Turns off the light theme and turn on the dark theme and other configurations for nighttime."
     (disable-theme 'apropospriate-light)
-    (enable-theme 'apropospriate-dark)
-    ;; customize the theme
+    (enable-theme 'apropospriate-dark))
+
+  (defun sundial-common-config ()
+    "Configurations that are common to both day(time) and night(time)."
+    ;; makes the markdown header noticable
     (markdown-update-header-faces markdown-header-scaling
                                   markdown-header-scaling-values))
 
+  (add-hook 'sundial-daytime-hook #'sundial-common-config)
   (add-hook 'sundial-daytime-hook #'my-daytime-config)
+  (add-hook 'sundial-nighttime-hook #'sundial-common-config)
   (add-hook 'sundial-nighttime-hook #'my-nighttime-config)
   (sundial-start)
+
+  ;; comments should be italics always
+  (custom-set-faces
+   '(font-lock-comment-delimiter-face ((t (:slant italic))))
+   '(font-lock-comment-face ((t (:slant italic)))))
 
   ;; increase line space for readability
   (setq-default line-spacing 0.25)
@@ -951,7 +941,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 
   (setq speedbar-show-unknown-files t)
   (add-hook 'speedbar-mode-hook (lambda nil
-                                  (linum-mode -1))))
+                                  (display-line-numbers-mode -1))))
 
 ;; execute the graphical section under different circumstance
 ;; since daemon and terminal session are somewhat related, the use of daemonp is
