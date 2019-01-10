@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <06 Jan. 2019 -- 19:50 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Jan. 2019 -- 00:32 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -913,9 +913,9 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                                   markdown-header-scaling-values))
 
   (add-hook 'sundial-daytime-hook #'sundial-common-config)
-  (add-hook 'sundial-daytime-hook #'my-daytime-config)
+  (add-hook 'sundial-daytime-hook #'sundial-daytime-config)
   (add-hook 'sundial-nighttime-hook #'sundial-common-config)
-  (add-hook 'sundial-nighttime-hook #'my-nighttime-config)
+  (add-hook 'sundial-nighttime-hook #'sundial-nighttime-config)
   (sundial-start)
 
   ;; comments should be italics always
