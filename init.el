@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Jan. 2019 -- 01:34 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Jan. 2019 -- 02:48 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -233,6 +233,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (require 'ruby-mode)
 (require 'lua-mode)
 (require 'sundial)
+(require 'visual-regexp)
 
 ;; don't show the startup message
 (setq inhibit-startup-message t)
@@ -386,6 +387,13 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                    upcase-region
                    downcase-region))
   (put command 'disabled nil))
+
+;; visual-regexp settings
+(setq vr/auto-show-help t
+      vr/default-feedback-limit 75
+      vr/default-replace-preview nil
+      vr/match-separator-use-custom-face t
+      vr/plain nil)
 
 
 
@@ -650,7 +658,6 @@ The function returns nil for places that the spell checker should `not' check; o
 ;; §3: Keybindings
 
 (require 'windmove)
-(require 'visual-regexp)
 (require 'xah-copy)
 (require 'xah-cut)
 
