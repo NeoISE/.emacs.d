@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Jan. 2019 -- 01:14 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Jan. 2019 -- 01:34 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -180,6 +180,10 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
 (require 'async)
 (require 'paradox)
+
+;; perform asynchronous byte compliation of package files
+(async-bytecomp-package-mode t)
+(setq async-bytecomp-allowed-packages '(all))
 
 ;; load sensitive data, require for paradox token access
 (load user-sensitive-file)
