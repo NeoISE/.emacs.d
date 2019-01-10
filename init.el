@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Jan. 2019 -- 00:32 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <10 Jan. 2019 -- 01:14 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -239,10 +239,10 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                    (getenv "UserProfile"))))
 
 ;; prefer UTF-8
-(setq default-buffer-file-coding-system 'utf-8
-      locale-coding-system 'utf-8)
+(setq locale-coding-system 'utf-8)
+(setq-default buffer-file-coding-system 'utf-8)
 (set-language-environment 'utf-8)
-(set-terminal-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
 (prefer-coding-system 'utf-8)
 
 ;; always syntax highlight
@@ -927,8 +927,14 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (setq-default line-spacing 0.25)
 
   ;; highlight-thing
-  (setq highlight-thing-delay-seconds 1.5
-        highlight-thing-case-sensitive-p t)
+  (setq highlight-thing-delay-seconds 3.5
+        highlight-thing-case-sensitive-p t
+        highlight-thing-limit-to-defun nil
+        highlight-thing-limit-to-region-in-large-buffers-p t
+        highlight-thing-narrow-region-lines 45
+        highlight-thing-large-buffer-limit large-file-warning-threshold
+        highlight-thing-prefer-active-region nil
+        highlight-thing-all-visible-buffers-p t)
   (add-hook 'prog-mode-hook 'highlight-thing-mode)
 
   ;; different cursors to indicate different writing modes
