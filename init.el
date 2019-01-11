@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <11 Jan. 2019 -- 01:39 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <11 Jan. 2019 -- 16:15 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -296,7 +296,7 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (setq-default find-file-visit-truename t)
 
 ;; requires emacs to place a newline at the end of the file
-(setq require-final-newline "visit-save")
+(setq require-final-newline 'visit-save)
 
 ;; setup markdown mode
 (add-to-list 'auto-mode-alist '("\\.m\\(arkdown\\|d\\)\\'" . markdown-mode))
