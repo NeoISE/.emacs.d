@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <10 Jan. 2019 -- 02:48 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <11 Jan. 2019 -- 01:39 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -452,15 +452,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 (defvaralias 'powershell-indent 'tab-width)
 (defvaralias 'powershell-continuation-indent 'powershell-indent)
 
-;; improve powershell indentation
-;; as of 11 Jan. 2017, there was no way to indent-region through powershell.el
-(defun powershell-indent-line-or-region nil
-  "Supplies the ability to indent over a region if a region is active, otherwise indent the current line."
-  (interactive)
-  (if (region-active-p)
-      (indent-region (region-beginning) (region-end))
-    (powershell-indent-line)))
-
 (add-hook 'powershell-mode-hook
           (lambda nil
             (setq fill-column 115)))
@@ -680,7 +671,12 @@ The function returns nil for places that the spell checker should `not' check; o
 (global-set-key (kbd "C-c d") 'windmove-right)
 
 ;; powershell
-(define-key powershell-mode-map "\t" 'powershell-indent-line-or-region)
+;; default keys for powershell-mode is horrible
+(define-key powershell-mode-map (kbd "C-'") 'powershell-quote-selection)
+(define-key powershell-mode-map (kbd "C-\"") 'powershell-quote-selection)
+(define-key powershell-mode-map (kbd "M-'") 'powershell-unquote-selection)
+(define-key powershell-mode-map (kbd "M-\"") 'powershell-unquote-selection)
+(define-key powershell-mode-map (kbd "C-`") 'powershell-escape-selection)
 
 ;; origami
 (define-key origami-mode-map (kbd "C-c C-f") 'origami-toggle-node)
