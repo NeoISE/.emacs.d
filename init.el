@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <11 Jan. 2019 -- 16:15 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <12 Jan. 2019 -- 00:50 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -118,10 +118,10 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
 ;; Set up the package sources, makes melpa higher than gnu
 (require 'package)
-(add-to-list 'package-archives
-             `("melpa" . ,(if (gnutls-available-p)
-                              "https://melpa.org/packages/"
-                            "http://melpa.org/packages/")) t)
+(unless (gnutls-available-p)
+  (error "%s" "gnutls-available-p: not available; unable to use tls authenication"))
+
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (setq package-archive-priorities '(("melpa" . 10)
                                    ("gnu"   . 0)))
 (package-initialize)
@@ -150,13 +150,6 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
                                   smart-mark
                                   origami
 
-                                  ;; tab-completions
-                                  yasnippet
-                                  yasnippet-snippets
-                                  java-snippets
-                                  haskell-snippets
-                                  company
-
                                   ;; graphic improvements
                                   apropospriate-theme
                                   smart-mode-line
@@ -172,7 +165,14 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
                                   ;; Package manager
                                   async
-                                  paradox))
+                                  paradox
+
+                                  ;; tab-completions
+                                  yasnippet
+                                  java-snippets
+                                  haskell-snippets
+                                  company
+                                  yasnippet-snippets))
 (package-install-selected-packages)
 
 ;; leaves the loading after the installation of needed files
