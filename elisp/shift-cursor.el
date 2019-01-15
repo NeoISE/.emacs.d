@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <11 Jan. 2019 -- 22:18 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <12 Jan. 2019 -- 01:48 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -97,6 +97,16 @@ The value of this variable must also be a valid value for the variable `cursor-t
           (setq chosen-cursor `(,(cdr -cons-pred-cursor))))))
     (setq cursor-type (car chosen-cursor))))
 
+(defun shift-cursor/maybe-change-cursor-legacy nil
+  "Possibly change the current cursor, if the right mode is active.
+
+This is the legacy method of \\[shift-cursor-mode]: we are only updating the cursor to type `shift-cursor/overwrite-cursor' when \\[overwrite-mode] is active, otherwise, the cursor is of type `shift-cursor/insert-cursor'.
+
+There are still some issues with the abstraction of \\[shift-cursor-mode], so this legacy method is preferred while the abstraction of the minor mode is worked on."
+  (if overwrite-mode
+      (setq cursor-type shift-cursor/overwrite-cursor)
+    (setq cursor-type shift-cursor/insert-cursor)))
+
 ;;;###autoload
 (define-minor-mode shift-cursor-mode
   "Minor mode that shifts the cursor of the current buffer under certain conditions.
@@ -118,14 +128,42 @@ The conditions (predicates) and cursors that would activate with those predicate
     ;; restore the old cursor
     (setq cursor-type shift-cursor/old-cursor-type)))
 
+;;;###autoload
+(define-minor-mode shift-cursor-legacy-mode
+  "This is the legacy method of \\[shift-cursor-mode]: we are only updating the cursor to type `shift-cursor/overwrite-cursor' when \\[overwrite-mode] is active, otherwise, the cursor is of type `shift-cursor/insert-cursor'.
+
+There are still some issues with the abstraction of \\[shift-cursor-mode], so this legacy method is preferred while the abstraction of the minor mode is worked on."
+  :init nil
+  :lighter " ShC"
+  :global nil
+  :group 'shift-cursor
+
+  (if shift-cursor-legacy-mode
+      (progn
+        (setq shift-cursor/old-cursor-type cursor-type)
+        (add-hook 'overwrite-mode-hook #'shift-cursor/maybe-change-cursor-legacy)
+        (shift-cursor/maybe-change-cursor))
+    (remove-hook 'overwrite-mode-hook #'shift-cursor/maybe-change-cursor-legacy)
+    (setq cursor-type shift-cursor/old-cursor-type)))
+
 (defun shift-cursor/maybe-activate nil
   (unless shift-cursor-mode
     (shift-cursor-mode t)))
+
+(defun shift-cursor/maybe-activate-legacy nil
+  (unless shift-cursor-legacy-mode
+    (shift-cursor-legacy-mode t)))
 
 ;;;###autoload
 (define-globalized-minor-mode global-shift-cursor-mode
   shift-cursor-mode
   shift-cursor/maybe-activate
+  :group 'shift-cursor)
+
+;;;###autoload
+(define-globalized-minor-mode global-shift-cursor-legacy-mode
+  shift-cursor-legacy-mode
+  shift-cursor/maybe-activate-legacy
   :group 'shift-cursor)
 
 (provide 'shift-cursor)

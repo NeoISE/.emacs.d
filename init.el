@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <12 Jan. 2019 -- 00:50 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <12 Jan. 2019 -- 01:52 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -945,7 +945,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (add-hook 'prog-mode-hook 'highlight-thing-mode)
 
   ;; different cursors to indicate different writing modes
-  (global-shift-cursor-mode t)
+  (global-shift-cursor-legacy-mode t)
 
   ;; declutter symbolic words
   (global-prettify-symbols-mode t)
