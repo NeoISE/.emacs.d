@@ -8,6 +8,8 @@
 
 *.bak
 
+*.elc
+
 # track the git-ignore, the main config file (init.el), license file, and read-me
 !/init.el
 !/README.md
