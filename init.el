@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <19 Jan. 2019 -- 02:28 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <26 Jan. 2019 -- 02:29 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -831,7 +831,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  (max-height (maximum-pixel-height frm))
                  (prefer-height (* 0.64 max-height)))
             (set-frame-height frm (truncate prefer-height) nil t))
-          (set-frame-width frm (+ fill-column hl-linum/margin-space)))
+          (set-frame-width frm fill-column))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
