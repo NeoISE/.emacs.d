@@ -3,10 +3,21 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:50 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <28 Jan. 2019 -- 23:02 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
+;;
+;; After the change to the newer "sleeker" look for the theming, I decided to
+;; overhaul the looks of the icons. The redesign was to conform to Google's
+;; Material Design suggestions with the colors chosen from their website, "https://material.io/tools/color/".
+;; The new colors were chosen to be as close to the original colors of the icons
+;; as possible. In addition to changing the colors, some new colors are also
+;; used to enrich the icons, using 4-6 colors instead of just using 2-3 colors.
+;;
+;; Also, the redesign included some new icons.
+;;
+;;; Original Commentary:
 ;;
 ;; I have seen some hating the icons that emacs used for the speedbar, and I do
 ;; too. Since I do have an active speedbar, thanks to sr-speedbar, I decided to
@@ -22,7 +33,9 @@
 (require 'speedbar)
 
 (defgroup speedbar-icons-theme nil
-  "My icon theme set for the speedbar.")
+  "My icon theme set for the speedbar."
+  :version "25.1"
+  :group 'speedbar)
 
 ;; Todo: I need to complete a larger icon set, 32x32.
 (defcustom sit/use-large-icons nil
@@ -71,6 +84,14 @@ The large icons are 32x32, while small icons are 24x24 pixels."
   ((:type png :file "24x24/page-unselected.png" :ascent center))
   "Image of a file that is not highlighted nor selected.")
 
+(defimage sit/box-open
+  ((:type png :file "24x24/box-open.png" :ascent center))
+  "Image of a box that is open.")
+
+(defimage sit/box-closed
+  ((:type png :file "24x24/box-closed.png" :ascent center))
+  "Image of a box that is closed.")
+
 (defimage sit/tag
   ((:type png :file "24x24/tag.png" :ascent center))
   "Image of a basic tag.")
@@ -91,6 +112,18 @@ The large icons are 32x32, while small icons are 24x24 pixels."
   ((:type png :file "24x24/tag-type.png" :ascent center))
   "Image of a tag that is used to indicate types.")
 
+(defimage sit/checkout
+  ((:type png :file "24x24/checkout-cart.png" :ascent center))
+  "Image of a cart used to denote checkout.")
+
+(defimage sit/gift-box-open
+  ((:type png :file "24x24/gift-box-open.png" :ascent center))
+  "Image of a gift box that is open to denote objects which are out of date.")
+
+(defimage sit/gift-box-closed
+  ((:type png :file "24x24/gift-box-closed.png" :ascent center))
+  "Image of a gift box used to denote objects.")
+
 (setq speedbar-expand-image-button-alist
       '(("<+>" . sit/folder-plus)
         ("<->" . sit/folder-minus)
@@ -99,10 +132,8 @@ The large icons are 32x32, while small icons are 24x24 pixels."
         ("[-]" . sit/page-selected)
         ("[ ]" . sit/page-empty)
         ("[?]" . sit/page-unknown)
-        
-        ;; ("{+}" . ezimage-box-plus)
-        ;; ("{-}" . ezimage-box-minus)
-
+        ("{+}" . sit/box-open)
+        ("{-}" . sit/box-closed)
         ("<M>" . sit/mail)
         ("<d>" . sit/tag)
         ("<i>" . sit/tag)
@@ -112,12 +143,10 @@ The large icons are 32x32, while small icons are 24x24 pixels."
         (">"   . sit/tag)
         ("@"   . sit/tag-type)
         ("  @" . sit/tag-type)
-        
-        ;; ("*"   . ezimage-checkout)
-        ;; ("#"   . ezimage-object)
-        ;; ("!"   . ezimage-object-out-of-date)
+        ("*"   . sit/checkout)
+        ("#"   . sit/gift-box-closed)
+        ("!"   . sit/gift-box-open)
         ;; ("//"  . ezimage-label)
-
         ("%"   . sit/lock)))
 
 (provide 'speedbar-icons-theme)
