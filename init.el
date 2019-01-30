@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <26 Jan. 2019 -- 02:29 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <30 Jan. 2019 -- 01:59 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -759,6 +759,26 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  system-type)))
     (- (display-pixel-width display) 48)))
 
+(defun my-frame-font-setup (frame)
+  "Applies different fonts to the `fixed-pitch-serif' and `variable-pitch' faces."
+  ;; the fonts are stored from left (most preferred) to right
+  ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
+  ;; the cons cell as the font family name and cdr is the font size
+  (let ((fixed-serif-font '(("Anonymous Pro" . 11) ("Courier New" . 10.5)))
+        (variable-pitch-font '(("FiraGO" . 12) ("Arial" . 12))))
+    ;; if the font at the front of the current list is not available
+    ;; then remove the current head of the list and continue finding font
+    (while (not (member (car (car fixed-serif-font)) (font-family-list)))
+      (setq fixed-serif-font (cdr fixed-serif-font)))
+    (while (not (member (car (car variable-pitch-font)) (font-family-list)))
+      (setq variable-pitch-font (cdr variable-pitch-font)))
+    (let ((fs-font-name (car (car fixed-serif-font)))
+          (fs-font-size (cdr (car fixed-serif-font)))
+          (vp-font-name (car (car variable-pitch-font)))
+          (vp-font-size (cdr (car variable-pitch-font))))
+      (set-face-attribute 'fixed-pitch-serif frame :font (concat fs-font-name "-" (number-to-string fs-font-size)))
+      (set-face-attribute 'variable-pitch frame :font (concat vp-font-name "-" (number-to-string vp-font-size))))))
+
 (defun my-initial-frame-setup (&optional frame)
   "This function sets up the initial frame of the emacs process."
   (when (daemonp)
@@ -770,7 +790,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  (selected-frame))))
     (if (display-graphic-p frm)
         ;; the frame is graphical
-
         (progn
           (let* ((frame-resize-pixelwise t)
                  (max-height (maximum-pixel-height frm))
@@ -786,7 +805,14 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                             (truncate prefer-height) t))
 
           ;; set up the colorings
-          (my-color-and-graphics-setup))
+          (my-color-and-graphics-setup)
+          ;; set up fonts for some special faces
+          (my-frame-font-setup frm)
+          ;; force fixed-pitch to be the same as default
+          (set-face-attribute 'fixed-pitch frm :inherit 'default :family 'unspecified)
+          ;; comments should be italics always
+          (set-face-attribute 'font-lock-comment-face frm :slant 'italic)
+          (set-face-attribute 'font-lock-comment-delimiter-face frm :slant 'italic))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
@@ -831,7 +857,14 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  (max-height (maximum-pixel-height frm))
                  (prefer-height (* 0.64 max-height)))
             (set-frame-height frm (truncate prefer-height) nil t))
-          (set-frame-width frm fill-column))
+          (set-frame-width frm fill-column)
+          ;; set up fonts for some special faces
+          (my-frame-font-setup frm)
+          ;; force fixed-pitch to be the same as default
+          (set-face-attribute 'fixed-pitch frm :inherit 'default :family 'unspecified)
+          ;; comments should be italics always
+          (set-face-attribute 'font-lock-comment-face frm :slant 'italic)
+          (set-face-attribute 'font-lock-comment-delimiter-face frm :slant 'italic))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
@@ -926,11 +959,6 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   (add-hook 'sundial-nighttime-hook #'sundial-nighttime-config)
   (sundial-start)
 
-  ;; comments should be italics always
-  (custom-set-faces
-   '(font-lock-comment-delimiter-face ((t (:slant italic))))
-   '(font-lock-comment-face ((t (:slant italic)))))
-
   ;; increase line space for readability
   (setq-default line-spacing 0.25)
 
@@ -960,42 +988,46 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 ;; execute the graphical section under different circumstance
 ;; since daemon and terminal session are somewhat related, the use of daemonp is
 ;; used to distinguish the two
-(if (daemonp)
-    (progn
-      (dolist (frm-alist '(initial-frame-alist
-                           default-frame-alist))
-        (if (eq system-type 'windows-nt)
-            (if (member "Hack" (font-family-list))
-                (add-to-list frm-alist '(font . "Hack-10"))
-              ;; else
-              (add-to-list frm-alist '(font . "Consolas-10"))
+(let ((preferred-font '(("Hack" . 10) ("Consolas" . 10.5) ("DejaVu Sans Mono" . 10) ("Menlo" . 10))))
+  ;; the fonts are stored from left (most preferred) to right
+  ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
+  ;; the cons cell as the font family name and cdr is the font size
+  (while (not (member (car (car preferred-font)) (font-family-list)))
+    ;; if the font at the front of the current list is not available
+    ;; then remove the current head of the list and continue finding font
+    (setq preferred-font (cdr preferred-font)))
+  ;; found the font
+  (let ((pref-font-name (car (car preferred-font)))
+        (pref-font-size (cdr (car preferred-font))))
+    (if (daemonp)
+        (progn
+          (dolist (frm-alist '(initial-frame-alist
+                               default-frame-alist))
+            (add-to-list frm-alist `(font . ,(concat pref-font-name "-" (number-to-string pref-font-size))))
+            (when (and (eq system-type 'windows-nt)
+                       (string-equal "Consolas" pref-font-name)
+                       (member "DejaVu Sans Mono" (font-family-list)))
+              ;; Consolas on windows is missing many unicode characters
               ;; For math symbols
-              (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono")
+              (set-fontset-font t '(#X2200 . #X22EF) "DejaVu Sans Mono")
               ;; arrows
-              (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono"))
-          (if (member "Hack" (font-family-list))
-              (add-to-list frm-alist '(font . "Hack-10"))
-            (add-to-list frm-alist '(font . "DejaVu Sans Mono-10")))))
+              (set-fontset-font t '(#X2190 . #X21E9) "DejaVu Sans Mono")))
+          (add-hook 'after-make-frame-functions 'my-initial-frame-setup))
 
-      (add-hook 'after-make-frame-functions 'my-initial-frame-setup))
-  ;; when not started as a daemon
-  (progn
-    ;; fonts are not shared across systems, so we use different fonts
-    (if (eq system-type 'windows-nt)
-        (if (member "Hack" (font-family-list))
-            (set-frame-font "Hack-10" t t)
-          ;; else
-          (set-frame-font "Consolas-10" t t)
+      ;; when not started as a daemon
+      (progn
+        (set-frame-font (concat pref-font-name "-" (number-to-string pref-font-size)) t t)
+        (when (and (eq system-type 'windows-nt)
+                   (string-equal "Consolas" pref-font-name)
+                   (member "DejaVu Sans Mono" (font-family-list)))
+          ;; Consolas on windows is missing many unicode characters
           ;; For math symbols
-          (set-fontset-font t '(#X2200 . #X22EF) "Dejavu Sans Mono")
+          (set-fontset-font t '(#X2200 . #X22EF) "DejaVu Sans Mono")
           ;; arrows
-          (set-fontset-font t '(#X2190 . #X21E9) "Dejavu Sans Mono"))
-      (if (member "Hack" (font-family-list))
-          (set-frame-font "Hack-10" t t)
-        (set-frame-font "DejaVu Sans Mono-10" t t)))
+          (set-fontset-font t '(#X2190 . #X21E9) "DejaVu Sans Mono"))
 
-    (my-initial-frame-setup)
-    (add-hook 'after-make-frame-functions 'my-default-frame-setup)))
+        (my-initial-frame-setup)
+        (add-hook 'after-make-frame-functions 'my-default-frame-setup)))))
 
 
 ;; Local Variables:
