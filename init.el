@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <30 Jan. 2019 -- 01:59 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <04 Mar. 2019 -- 01:58 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -288,6 +288,15 @@ Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
 
 ;; line numbering
 (global-display-line-numbers-mode)
+(defun toggle-line-numberings ()
+  "Toggles between displaying relative line numberings or displaying absolute line numberings for the current buffer."
+  (interactive)
+  (if (eq display-line-numbers 'visual)
+      (progn
+        (setq display-line-numbers t)
+        (message "%s" "Absolute line numberings"))
+    (setq display-line-numbers 'visual)
+    (message "%s" "Relative line numberings")))
 
 ;; force newer files
 (setq load-prefer-newer t)
@@ -654,8 +663,9 @@ The function returns nil for places that the spell checker should `not' check; o
 (require 'xah-cut)
 
 ;; most used keys
-(global-set-key (kbd "<f6>") 'isearch-forward-regexp)
-(global-set-key (kbd "<f7>") 'isearch-backward-regexp)
+;;(global-set-key (kbd "<f6>") 'isearch-forward-regexp)
+;;(global-set-key (kbd "<f7>") 'isearch-backward-regexp)
+(global-set-key (kbd "<f6>") 'toggle-line-numberings)
 (global-set-key (kbd "<f8>") 'ranger)
 (global-set-key (kbd "<f9>") 'split-window-below)
 (global-set-key (kbd "<f10>") 'split-window-right) ; no need for menu-bar-open
