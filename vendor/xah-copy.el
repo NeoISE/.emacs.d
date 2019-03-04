@@ -6,7 +6,7 @@
 ;; Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:48 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <04 Mar. 2019 -- 01:28 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -27,47 +27,69 @@
 ;;
 ;;; Code:
 
-(defun xah-copy-line-or-region nil
-  "Copy current line, or text selection.
-When called repeatedly, append copy subsequent lines.
-When `universal-argument' is called first, copy whole buffer (respects `narrow-to-region').
+(defun xah-copy-line-or-region (&optional arg)
+  "Copy current line, text selection, some number of contiguous lines, or whole buffer.
+
+When called repeatedly (without `universal-argument'), append subsequent lines to first copied line.
+
+When called with a prefix argument using `universal-argument', take the numeric value of the argument and copy the current line and that many lines above and below the current line.
+If a value of 0 is passed, then copy the whole buffer (respects `narrow-to-region').
 
 Originally from URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html' under Version 2017-07-08"
-  (interactive)
+  (interactive "P")
   (cond
-   (current-prefix-arg
-    (progn
-      (kill-ring-save (point-min) (point-max))
-      (message "All text in visible buffer is copied")))
+   (arg                                 ; there is a prefix argument
+    (let ((num (abs (prefix-numeric-value arg))))
+      (if (= num 0)
+          (progn
+            (kill-ring-save (point-min) (point-max))
+            (message "%s" "All text in visible buffer is copied"))
+        (let ((downstep-left num)
+              p-end)
+          (save-excursion
+            (setq downstep-left (forward-line num))
+            ;; now we are either
+            ;; 1. at the end of the right line    (copy)
+            ;; 2. end of buffer on non-empty line (copy)
+            ;; 3. end of buffer on empty line
+            ;; 3a. empty line is current line     (copy)
+            ;; 3b. is not current line            (do not copy)
+            (when (and (eobp)           ; 2 or 3
+                       (equal (line-beginning-position) (line-end-position)) ; 3
+                       (not (= downstep num)))
+              ;; 3b
+              (forward-line -1))
+            (setq p-end (line-end-position)))
+          (kill-ring-save (line-beginning-position (- 1 num)) p-end)
+          (message "%s" "Surrounding texts are copied")))))
    ((use-region-p)
-    (progn
-      (kill-ring-save (region-beginning) (region-end))
-      (message "Text in active region copied")))
+    (kill-ring-save (region-beginning) (region-end) t)
+    (message "%s" "Text in active region copied"))
    ((eq last-command this-command)
     (if (eobp)
-        (message "Empty line at end of buffer.")
+        (message "%s" "Empty line at end of buffer")
       (progn
         (kill-append "\n" nil)
         (kill-append (buffer-substring-no-properties (line-beginning-position)
                                                      (line-end-position))
                      nil)
-        (message "Line copy appended")
+        (message "%s" "Line copy appended")
         (progn
           (end-of-line)
           (forward-char)))))
    ((eobp)
     (if (eq (char-before) 10)
-        (message "Empty line at the end of buffer.")
+        (message "%s" "Empty line at the end of buffer")
       (progn
         (kill-ring-save (line-beginning-position) (line-end-position))
         (end-of-line)
-        (message "Line Copied"))))
+        (message "%s" "Line Copied"))))
    (t
     (progn
       (kill-ring-save (line-beginning-position) (line-end-position))
       (end-of-line)
       (forward-char)
-      (message "Line Copied")))))
+      (message "%s" "Line Copied")))))
 
 (provide 'xah-copy)
 

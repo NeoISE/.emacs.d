@@ -6,7 +6,7 @@
 ;; Modifier:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <31 Dec. 2018 -- 22:48 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <04 Mar. 2019 -- 01:16 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -27,20 +27,51 @@
 ;;
 ;;; Code:
 
-(defun xah-cut-line-or-region nil
-  "Cut the current line, or text selection.
-When `universal-argument' is called first, cut whole buffer (respects `narrow-to-region').
+(defun xah-cut-line-or-region (&optional arg)
+  "Cut the current line, text selection, some number of contiguous lines, or whole buffer.
+
+When called repeatedly (without `universal-argument'), cut and append the subsequent lines to the first cut line.
+
+When called with a prefix argument using `universal-argument', take the numeric value of the argument and cut the current line and that many lines above and below the current line.
+If a value of 0 is passed, then cut the whole buffer (respects `narrow-to-region').
 
 Originally from URL `http://ergoemacs.org/emacs/emacs_copy_cut_current_line.html' under Version 2015-06-10"
-  (interactive)
-  (if current-prefix-arg
-      (progn ; not kill-region because we don't want to include previous kills
-        (kill-new (buffer-string))
-        (delete-region (point-min) (point-max)))
-    (progn (if (use-region-p)
-               (kill-region (region-beginning) (region-end) t)
-             (kill-region
-              (line-beginning-position) (line-beginning-position 2))))))
+  (interactive "P")
+  (cond
+   (arg                                 ; there is a prefix argument
+    (let ((num (abs (prefix-numeric-value arg))))
+      (if (= 0 num)
+          (progn
+            (kill-new (buffer-string))
+            (delete-region (point-min) (point-max))
+            (message "%s" "Cut the whole buffer"))
+        (let ((downstep-left num)
+              p-end)
+          (save-excursion
+            (setq downstep-left (forward-line num))
+            ;; now we are either
+            ;; 1. at the end of the right line    (copy)
+            ;; 2. end of buffer on non-empty line (copy)
+            ;; 3. end of buffer on empty line
+            ;; 3a. empty line is current line     (copy)
+            ;; 3b. is not current line            (do not copy)
+            (when (and (eobp)           ; 2 or 3
+                       (equal (line-beginning-position) (line-end-position)) ; 3
+                       (not (= downstep-left num)))
+              ;; 3b
+              (forward-line -1))
+            (setq p-end (line-end-position)))
+          (save-restriction
+            (narrow-to-region (line-beginning-position (- 1 num)) p-end)
+            (kill-new (buffer-string))
+            (delete-region (point-min) (point-max)))
+          (message "%s" "Cut the surrounding texts")))))
+   ((use-region-p)
+    (kill-region (region-beginning) (region-end) t)
+    (message "%s" "Cut the active region"))
+   (t
+    (kill-region (line-beginning-position) (line-beginning-position 2))
+    (message "%s" "Cut the line"))))
 
 (provide 'xah-cut)
 
