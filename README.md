@@ -24,16 +24,20 @@ Purpose | My Preferred Font | My Preferred Backup Font for Microsoft Windows Ope
   Using the key combination:
   1. <kbd> C </kbd> - <kbd> u </kbd> <kbd> 0 </kbd> <kbd> C </kbd>-<kbd> w </kbd> for *cutting* all visible text in the narrowing (if in effect) or whole buffer (if narrowing is not in effect) without changing the current location of the cursor,
   2. <kbd> C </kbd> - <kbd> u </kbd> <kbd> 0 </kbd> <kbd> M </kbd>-<kbd> w </kbd> for *copying* all visible text in the narrowing (if in effect) or whole buffer (if narrowing is not in effect) without changing the current location of the cursor.
-  These combinations help to reduce the number of <kbd> C </kbd>-<kbd> u </kbd> <kbd> C </kbd>-<kbd> SPC </kbd> pressing to restore point after the typical approach of <kbd> C </kbd>-<kbd> h </kbd> <kbd> C </kbd>-<kbd> w </kbd> for cutting whole buffer or <kbd> C </kbd>-<kbd> h </kbd> <kbd> M </kbd>-<kbd> w </kbd> for copying whole buffer.
+  These combinations help to reduce the number of <kbd> C </kbd>-<kbd> u </kbd> <kbd> C </kbd>-<kbd> SPC </kbd> pressing to restore point after the typical approach of <kbd> C </kbd>-<kbd> x </kbd> <kbd> h </kbd> <kbd> C </kbd>-<kbd> w </kbd> for cutting whole buffer or <kbd> C </kbd>-<kbd> x </kbd> <kbd> h </kbd> <kbd> M </kbd>-<kbd> w </kbd> for copying whole buffer.
 
   We can also now use (input a valid number in place of NUM):
   1. <kbd> C </kbd> - <kbd> u </kbd> <kbd> NUM </kbd> <kbd> C </kbd>-<kbd> w </kbd>
   2. <kbd> C </kbd> - <kbd> u </kbd> <kbd> NUM </kbd> <kbd> M </kbd>-<kbd> w </kbd>
-  for cutting and copying a region of text that includes the current line and *NUM* number of lines above and *NUM* number of lines below the current line. **The absolute value of NUM is used**.
+
+  For cutting and copying a region of text that includes the current line and *NUM* number of lines above and *NUM* number of lines below the current line.
+  **The absolute value of NUM is used**.
+
   For a shortcut, use
   1. <kbd> C </kbd> - <kbd> u </kbd> <kbd> C </kbd>-<kbd> w </kbd>
   2. <kbd> C </kbd> - <kbd> u </kbd> <kbd> M </kbd>-<kbd> w </kbd>
-  for cutting and copying a region just like above but without the numeric argument, an implicit value of *4* is used.
+
+  For cutting and copying a region just like above but without the numeric argument, an implicit value of *4* is used.
   In fact, for each <kbd> C </kbd> - <kbd> u </kbd> pressed after the first, the implicit numeric argument is multiplied by 4.
 
 
