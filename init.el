@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <04 Mar. 2019 -- 01:58 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <08 Mar. 2019 -- 23:31 (Central Standard Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -52,30 +52,6 @@ Your current emacs version is \"%s\"."
 
 
 ;; §0 §§1: Misc. Preparations
-
-(defun advice--timestamp-message (format-string &rest args)
-  "Provides for time-stamping the messages in the `*Messages*' buffer.
-
-Taken from ``https://is.gd/t9VpW4'' with minor adjustments:
-  * Uses the built-in function `messages-buffer' instead of direct name.
-  * Replaces the first line conditional with a check for `nil' format-string (first `and' statement).
-    - Now checks if the format-string is a string (so that it is a valid message) and is not empty (second `and' statement), and
-    - If `message-log-max' is non-nil (third `and' statement).
-    The new check will be more likely to prevent empty time-stamps (i.e. when message's format is `nil').
-  * Replaces the `if' statement to a `when' statement because there was no else clause to begin with.
-  * Reduced the time-string to being just a call to the function `format-time-string'."
-  (when (and (stringp format-string)
-             (not (string= format-string ""))
-             message-log-max)
-    (let ((deactivate-mark nil)
-          (inhibit-read-only t))
-      (with-current-buffer (messages-buffer)
-        (goto-char (point-max))
-        (when (not (bolp))
-          (newline))
-        (insert "[" (format-time-string "%FT%T.%6N") "] ")))))
-
-(advice-add 'message :before 'advice--timestamp-message)
 
 ;; the other config files
 (defvar config-template-directory
