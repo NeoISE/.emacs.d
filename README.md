@@ -5,13 +5,12 @@ I was contemplating about putting up my configs online, but then I had to move c
 I found physically moving the files to be too tedious, so now the public parts of the configs are on Github.
 
 ## Fonts Used
-Technically, non-system default fonts are not required to be installed on the system for this configuration to work properly--the config will run just fine.
-Though to experience the full look-and-feel of the config, one needs to install the following fonts, listed below in **bold**; the listed fonts are not apart of this config nor is it included/shipped with this config.
+Technically, non-system default/included fonts are not required to be installed on the system for this configuration to work properly--the config will run just fine.
+Though to experience the configuration fully, one might want to install the following fonts, listed below in **bold**; the listed fonts are not a part of this config nor is it included/shipped with this config.
 
-Purpose | Preferred Font | Microsoft Windows Operating System Backup Font | macOS Backup Font | Linux (or UNIX) Backup Font
+Purpose | My Preferred Font | My Preferred Backup Font for Microsoft Windows Operating System | My Preferred Backup Font for macOS Operating System | My Preferred Backup Font for Linux (or UNIX) Operating Systems
 --- | --- | --- | --- | ---
-`default` face (the default font of the system) | **[Hack](https://github.com/source-foundry/Hack)** | Consolas¹ | Menlo | DejaVu Sans Mono
-`prettify-symbols-mode` Unicode Characters | - | **DejaVu Sans Mono** | - | -
+`default` face (the default font of the system) | **[Hack](https://github.com/source-foundry/Hack)** | Consolas (with **[DejaVu Sans Mono](https://dejavu-fonts.github.io/)** for `prettify-symbols-mode` Unicode Characters)¹ | Menlo | DejaVu Sans Mono
 `fixed-pitch` | same font as `default` is used | - | - | -
 `fixed-pitch-serif` | **[Anonymous Pro](http://www.marksimonson.com/fonts/view/anonymous-pro)** | Courier New | Courier New | Courier New
 `variable-pitch` | **[FiraGO](https://bboxtype.com/typefaces/FiraGO/)** | Arial | Arial | Arial
@@ -19,6 +18,24 @@ Purpose | Preferred Font | Microsoft Windows Operating System Backup Font | macO
 ¹ Suprisingly, Consolas is missing some crucial unicode symbols, like ⇒, which is needed for `prettify-symbols-mode`. Thus, if one does not want to install **Hack** on a Microsoft Windows operating system, then at least install **DejaVu Sans Mono** font to cover the unicode characters that Consolas lacks.
 
 ## News
+
+* 2019-03-08: Added some new functionality to the cut and copy commands, ability to toggle relative line-numberings (binded to <kbd>F6</kbd>), and updated the README.
+
+  Using the key combination:
+  1. <kbd> C </kbd> - <kbd> u </kbd> <kbd> 0 </kbd> <kbd> C </kbd>-<kbd> w </kbd> for *cutting* all visible text in the narrowing (if in effect) or whole buffer (if narrowing is not in effect) without changing the current location of the cursor,
+  2. <kbd> C </kbd> - <kbd> u </kbd> <kbd> 0 </kbd> <kbd> M </kbd>-<kbd> w </kbd> for *copying* all visible text in the narrowing (if in effect) or whole buffer (if narrowing is not in effect) without changing the current location of the cursor.
+  These combinations help to reduce the number of <kbd> C </kbd>-<kbd> u </kbd> <kbd> C </kbd>-<kbd> SPC </kbd> pressing to restore point after the typical approach of <kbd> C </kbd>-<kbd> h </kbd> <kbd> C </kbd>-<kbd> w </kbd> for cutting whole buffer or <kbd> C </kbd>-<kbd> h </kbd> <kbd> M </kbd>-<kbd> w </kbd> for copying whole buffer.
+
+  We can also now use (input a valid number in place of NUM):
+  3. <kbd> C </kbd> - <kbd> u </kbd> <kbd> NUM </kbd> <kbd> C </kbd>-<kbd> w </kbd>
+  4. <kbd> C </kbd> - <kbd> u </kbd> <kbd> NUM </kbd> <kbd> M </kbd>-<kbd> w </kbd>
+  for cutting and copying a region of text that includes the current line and *NUM* number of lines above and *NUM* number of lines below the current line. **The absolute value of NUM is used**.
+  For a shortcut, use
+  5. <kbd> C </kbd> - <kbd> u </kbd> <kbd> C </kbd>-<kbd> w </kbd>
+  6. <kbd> C </kbd> - <kbd> u </kbd> <kbd> M </kbd>-<kbd> w </kbd>
+  for cutting and copying a region just like above but without the numeric argument, an implicit value of *4* is used.
+  In fact, for each <kbd> C </kbd> - <kbd> u </kbd> pressed after the first, the implicit numeric argument is multiplied by 4.
+
 
 * 2019-01-30: Updated the icons and fonts; after moving to the new themes, the icons sort of felt out-of-place.
   Thus, I updated the icons' colors to conform to [Google's Material Design suggestions](https://material.io/tools/color/) and used a palette made of 6 colors to color the icons.
