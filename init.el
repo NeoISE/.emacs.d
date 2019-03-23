@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <08 Mar. 2019 -- 23:31 (Central Standard Time) by Maniroth Ouk>
+;; Last Updated: <22 Mar. 2019 -- 23:46 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -745,7 +745,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  system-type)))
     (- (display-pixel-width display) 48)))
 
-(defun my-frame-font-setup (frame)
+(defun my-frame-font-setup (&optional frame)
   "Applies different fonts to the `fixed-pitch-serif' and `variable-pitch' faces."
   ;; the fonts are stored from left (most preferred) to right
   ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
@@ -762,8 +762,8 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
           (fs-font-size (cdr (car fixed-serif-font)))
           (vp-font-name (car (car variable-pitch-font)))
           (vp-font-size (cdr (car variable-pitch-font))))
-      (set-face-attribute 'fixed-pitch-serif frame :font (concat fs-font-name "-" (number-to-string fs-font-size)))
-      (set-face-attribute 'variable-pitch frame :font (concat vp-font-name "-" (number-to-string vp-font-size))))))
+      (set-face-attribute 'fixed-pitch-serif nil :font (concat fs-font-name "-" (number-to-string fs-font-size)))
+      (set-face-attribute 'variable-pitch nil :font (concat vp-font-name "-" (number-to-string vp-font-size))))))
 
 (defun my-initial-frame-setup (&optional frame)
   "This function sets up the initial frame of the emacs process."
@@ -937,7 +937,9 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
     "Configurations that are common to both day(time) and night(time)."
     ;; makes the markdown header noticable
     (markdown-update-header-faces markdown-header-scaling
-                                  markdown-header-scaling-values))
+                                  markdown-header-scaling-values)
+    ;; update the fonts
+    (my-frame-font-setup))
 
   (add-hook 'sundial-daytime-hook #'sundial-common-config)
   (add-hook 'sundial-daytime-hook #'sundial-daytime-config)
