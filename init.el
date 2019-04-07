@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <22 Mar. 2019 -- 23:46 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <07 Apr. 2019 -- 15:39 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -750,20 +750,33 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
   ;; the fonts are stored from left (most preferred) to right
   ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
   ;; the cons cell as the font family name and cdr is the font size
-  (let ((fixed-serif-font '(("Anonymous Pro" . 11) ("Courier New" . 10.5)))
-        (variable-pitch-font '(("FiraGO" . 12) ("Arial" . 12))))
-    ;; if the font at the front of the current list is not available
-    ;; then remove the current head of the list and continue finding font
-    (while (not (member (car (car fixed-serif-font)) (font-family-list)))
-      (setq fixed-serif-font (cdr fixed-serif-font)))
-    (while (not (member (car (car variable-pitch-font)) (font-family-list)))
-      (setq variable-pitch-font (cdr variable-pitch-font)))
-    (let ((fs-font-name (car (car fixed-serif-font)))
-          (fs-font-size (cdr (car fixed-serif-font)))
-          (vp-font-name (car (car variable-pitch-font)))
-          (vp-font-size (cdr (car variable-pitch-font))))
-      (set-face-attribute 'fixed-pitch-serif nil :font (concat fs-font-name "-" (number-to-string fs-font-size)))
-      (set-face-attribute 'variable-pitch nil :font (concat vp-font-name "-" (number-to-string vp-font-size))))))
+  (defun my-frame-font-setup--font-string (font-cons)
+    (and (consp font-cons)
+         (concat (car font-cons) "-" (number-to-string (cdr font-cons)))))
+  (defun my-frame-font-setup--find-font (font-list)
+    (let ((font-list-temp (copy-sequence font-list)))
+      ;; if the font at the front of the current list is not available
+      ;; then remove the current head of the list and continue finding font
+      (while (and font-list-temp (not (member (car (car font-list-temp)) (font-family-list))))
+        (setq font-list-temp (cdr font-list-temp)))
+      font-list-temp))
+
+  (let ((fixed-pitch-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10) ("Menlo" . 10)))
+        (fixed-serif-font '(("Anonymous Pro" . 10) ("Courier New" . 10)))
+        (variable-pitch-font '(("FiraGO" . 11) ("Arial" . 11))))
+    (let ((fp-font (my-frame-font-setup--font-string
+                    (car (my-frame-font-setup--find-font fixed-pitch-font))))
+          (fs-font (my-frame-font-setup--font-string
+                    (car (my-frame-font-setup--find-font fixed-serif-font))))
+          (vp-font (my-frame-font-setup--font-string
+                    (car (my-frame-font-setup--find-font variable-pitch-font)))))
+      (set-face-attribute 'fixed-pitch nil :font fp-font)
+      (set-face-attribute 'fixed-pitch-serif nil :font fs-font)
+      (set-face-attribute 'variable-pitch nil :font vp-font)))
+
+  ;; comments should be italics always
+  (set-face-attribute 'font-lock-comment-face nil :slant 'italic)
+  (set-face-attribute 'font-lock-comment-delimiter-face nil :slant 'italic))
 
 (defun my-initial-frame-setup (&optional frame)
   "This function sets up the initial frame of the emacs process."
@@ -793,12 +806,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
           ;; set up the colorings
           (my-color-and-graphics-setup)
           ;; set up fonts for some special faces
-          (my-frame-font-setup frm)
-          ;; force fixed-pitch to be the same as default
-          (set-face-attribute 'fixed-pitch frm :inherit 'default :family 'unspecified)
-          ;; comments should be italics always
-          (set-face-attribute 'font-lock-comment-face frm :slant 'italic)
-          (set-face-attribute 'font-lock-comment-delimiter-face frm :slant 'italic))
+          (my-frame-font-setup frm))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
@@ -845,12 +853,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
             (set-frame-height frm (truncate prefer-height) nil t))
           (set-frame-width frm fill-column)
           ;; set up fonts for some special faces
-          (my-frame-font-setup frm)
-          ;; force fixed-pitch to be the same as default
-          (set-face-attribute 'fixed-pitch frm :inherit 'default :family 'unspecified)
-          ;; comments should be italics always
-          (set-face-attribute 'font-lock-comment-face frm :slant 'italic)
-          (set-face-attribute 'font-lock-comment-delimiter-face frm :slant 'italic))
+          (my-frame-font-setup frm))
       ;; the frame is not graphical
       (let ((available-color (display-visual-class)))
         (cond ((or (eq available-color 'static-color)
@@ -976,7 +979,7 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 ;; execute the graphical section under different circumstance
 ;; since daemon and terminal session are somewhat related, the use of daemonp is
 ;; used to distinguish the two
-(let ((preferred-font '(("Hack" . 10) ("Consolas" . 10.5) ("DejaVu Sans Mono" . 10) ("Menlo" . 10))))
+(let ((preferred-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10) ("Menlo" . 10))))
   ;; the fonts are stored from left (most preferred) to right
   ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
   ;; the cons cell as the font family name and cdr is the font size
