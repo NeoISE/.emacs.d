@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <07 Apr. 2019 -- 15:39 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <08 Apr. 2019 -- 01:13 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -287,6 +287,11 @@ Your current emacs version is \"%s\"."
 ;; setup markdown mode
 (add-to-list 'auto-mode-alist '("\\.m\\(arkdown\\|d\\)\\'" . markdown-mode))
 (add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
+(when (executable-find "pandoc")
+  (setq markdown-command "pandoc -s -f markdown -t html --metadata pagetitle=\"live_preview\" --mathjax --highlight-style=espresso"))
+
+;; setup the browser to use eww
+(setq browse-url-browser-function 'eww-browse-url)
 
 ;; single space ends a sentence
 (setq sentence-end-double-space nil)
@@ -381,6 +386,11 @@ Your current emacs version is \"%s\"."
       vr/match-separator-use-custom-face t
       vr/plain nil)
 
+;; bibtex setup
+(defun my-bibtex-dialect-setup nil
+  (setq bibtex-dialect 'biblatex))
+(add-hook 'bibtex-mode-hook #'my-bibtex-dialect-setup)
+
 
 
 ;; §2 §§2: Tabs, Alignment, etc.
@@ -420,6 +430,8 @@ Your current emacs version is \"%s\"."
 
                 nxml-mode-hook
                 html-mode-hook
+
+                bibtex-mode-hook
                 ))
   (add-hook hook #'hook--force-use-spaces-only))
 
