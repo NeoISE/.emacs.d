@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <08 Apr. 2019 -- 01:13 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <09 May. 2019 -- 03:08 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -769,12 +769,14 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
     (let ((font-list-temp (copy-sequence font-list)))
       ;; if the font at the front of the current list is not available
       ;; then remove the current head of the list and continue finding font
-      (while (and font-list-temp (not (member (car (car font-list-temp)) (font-family-list))))
+      (while (and font-list-temp
+                  (not (member (car (car font-list-temp)) (font-family-list))))
         (setq font-list-temp (cdr font-list-temp)))
       font-list-temp))
 
-  (let ((fixed-pitch-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10) ("Menlo" . 10)))
-        (fixed-serif-font '(("Anonymous Pro" . 10) ("Courier New" . 10)))
+  (let ((fixed-pitch-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10)
+                            ("Menlo" . 10) ("Monospace" . 10)))
+        (fixed-serif-font '(("Anonymous Pro" . 10) ("Courier New" . 10) ("Monospace Serif" . 10)))
         (variable-pitch-font '(("FiraGO" . 11) ("Arial" . 11))))
     (let ((fp-font (my-frame-font-setup--font-string
                     (car (my-frame-font-setup--find-font fixed-pitch-font))))
@@ -991,11 +993,13 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 ;; execute the graphical section under different circumstance
 ;; since daemon and terminal session are somewhat related, the use of daemonp is
 ;; used to distinguish the two
-(let ((preferred-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10) ("Menlo" . 10))))
+(let ((preferred-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10)
+                        ("Menlo" . 10) ("Monospace" . 10))))
   ;; the fonts are stored from left (most preferred) to right
   ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
   ;; the cons cell as the font family name and cdr is the font size
-  (while (not (member (car (car preferred-font)) (font-family-list)))
+  (while (and preferred-font
+              (not (member (car (car preferred-font)) (font-family-list))))
     ;; if the font at the front of the current list is not available
     ;; then remove the current head of the list and continue finding font
     (setq preferred-font (cdr preferred-font)))
