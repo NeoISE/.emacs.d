@@ -3,7 +3,7 @@
 ;; Orig. Author:
 ;;     Name: Maniroth Ouk
 ;;     Email: maniroth_ouk@outlook.com
-;; Last Updated: <09 May. 2019 -- 03:08 (Central Daylight Time) by Maniroth Ouk>
+;; Last Updated: <11 May. 2019 -- 21:21 (Central Daylight Time) by Maniroth Ouk>
 ;; License: MIT
 ;;
 ;;; Commentary:
@@ -757,23 +757,23 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
                  system-type)))
     (- (display-pixel-width display) 48)))
 
+(defun my-frame-font-setup--find-font (font-list)
+  (let ((font-list-temp (copy-sequence font-list)))
+    ;; if the font at the front of the current list is not available
+    ;; then remove the current head of the list and continue finding font
+    (while (and font-list-temp
+                (not (member (car (car font-list-temp)) (font-family-list))))
+      (setq font-list-temp (cdr font-list-temp)))
+    font-list-temp))
+
+(defun my-frame-font-setup--font-string (font-cons)
+  (concat (car font-cons) "-" (number-to-string (cdr font-cons))))
+
 (defun my-frame-font-setup (&optional frame)
   "Applies different fonts to the `fixed-pitch-serif' and `variable-pitch' faces."
   ;; the fonts are stored from left (most preferred) to right
   ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
   ;; the cons cell as the font family name and cdr is the font size
-  (defun my-frame-font-setup--font-string (font-cons)
-    (and (consp font-cons)
-         (concat (car font-cons) "-" (number-to-string (cdr font-cons)))))
-  (defun my-frame-font-setup--find-font (font-list)
-    (let ((font-list-temp (copy-sequence font-list)))
-      ;; if the font at the front of the current list is not available
-      ;; then remove the current head of the list and continue finding font
-      (while (and font-list-temp
-                  (not (member (car (car font-list-temp)) (font-family-list))))
-        (setq font-list-temp (cdr font-list-temp)))
-      font-list-temp))
-
   (let ((fixed-pitch-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10)
                             ("Menlo" . 10) ("Monospace" . 10)))
         (fixed-serif-font '(("Anonymous Pro" . 10) ("Courier New" . 10) ("Monospace Serif" . 10)))
@@ -993,48 +993,41 @@ The parameter DISPLAY is used to avert a negative size issue when called under d
 ;; execute the graphical section under different circumstance
 ;; since daemon and terminal session are somewhat related, the use of daemonp is
 ;; used to distinguish the two
-(let ((preferred-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10)
-                        ("Menlo" . 10) ("Monospace" . 10))))
-  ;; the fonts are stored from left (most preferred) to right
-  ;; (least preferred / backup fonts) in an assoc. list fashion with the car of
-  ;; the cons cell as the font family name and cdr is the font size
-  (while (and preferred-font
-              (not (member (car (car preferred-font)) (font-family-list))))
-    ;; if the font at the front of the current list is not available
-    ;; then remove the current head of the list and continue finding font
-    (setq preferred-font (cdr preferred-font)))
-  ;; found the font
-  (let ((pref-font-name (car (car preferred-font)))
-        (pref-font-size (cdr (car preferred-font))))
-    (if (daemonp)
-        (progn
-          (dolist (frm-alist '(initial-frame-alist
-                               default-frame-alist))
-            (add-to-list frm-alist `(font . ,(concat pref-font-name "-" (number-to-string pref-font-size))))
-            (when (and (eq system-type 'windows-nt)
-                       (string-equal "Consolas" pref-font-name)
-                       (member "DejaVu Sans Mono" (font-family-list)))
-              ;; Consolas on windows is missing many unicode characters
-              ;; For math symbols
-              (set-fontset-font t '(#X2200 . #X22EF) "DejaVu Sans Mono")
-              ;; arrows
-              (set-fontset-font t '(#X2190 . #X21E9) "DejaVu Sans Mono")))
-          (add-hook 'after-make-frame-functions 'my-initial-frame-setup))
-
-      ;; when not started as a daemon
+(let* ((preferred-font '(("Hack" . 10) ("Consolas" . 10) ("DejaVu Sans Mono" . 10)
+                         ("Menlo" . 10) ("Monospace" . 10)))
+       (pref-font-shortened (my-frame-font-setup--find-font preferred-font))
+       (pref-font-font-name (car (car pref-font-shortened)))
+       (pref-font-full-name (my-frame-font-setup--font-string
+                             (car pref-font-shortened))))
+  (if (daemonp)
       (progn
-        (set-frame-font (concat pref-font-name "-" (number-to-string pref-font-size)) t t)
-        (when (and (eq system-type 'windows-nt)
-                   (string-equal "Consolas" pref-font-name)
-                   (member "DejaVu Sans Mono" (font-family-list)))
-          ;; Consolas on windows is missing many unicode characters
-          ;; For math symbols
-          (set-fontset-font t '(#X2200 . #X22EF) "DejaVu Sans Mono")
-          ;; arrows
-          (set-fontset-font t '(#X2190 . #X21E9) "DejaVu Sans Mono"))
+        (dolist (frm-alist '(initial-frame-alist
+                             default-frame-alist))
+          (add-to-list frm-alist `(font . ,pref-font-full-name))
+          (when (and (eq system-type 'windows-nt)
+                     (string-equal "Consolas" pref-font-font-name)
+                     (member "DejaVu Sans Mono" (font-family-list)))
+            ;; Consolas on windows is missing many unicode characters
+            ;; For math symbols
+            (set-fontset-font t '(#X2200 . #X22EF) "DejaVu Sans Mono")
+            ;; arrows
+            (set-fontset-font t '(#X2190 . #X21E9) "DejaVu Sans Mono")))
+        (add-hook 'after-make-frame-functions 'my-initial-frame-setup))
 
-        (my-initial-frame-setup)
-        (add-hook 'after-make-frame-functions 'my-default-frame-setup)))))
+    ;; when not started as a daemon
+    (progn
+      (set-frame-font pref-font-full-name t t)
+      (when (and (eq system-type 'windows-nt)
+                 (string-equal "Consolas" pref-font-font-name)
+                 (member "DejaVu Sans Mono" (font-family-list)))
+        ;; Consolas on windows is missing many unicode characters
+        ;; For math symbols
+        (set-fontset-font t '(#X2200 . #X22EF) "DejaVu Sans Mono")
+        ;; arrows
+        (set-fontset-font t '(#X2190 . #X21E9) "DejaVu Sans Mono"))
+
+      (my-initial-frame-setup)
+      (add-hook 'after-make-frame-functions 'my-default-frame-setup))))
 
 
 ;; Local Variables:
